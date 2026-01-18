@@ -44,10 +44,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jasyscom-corp/jasysai.git"
+    "url": "https://github.com/jasyswork/jasysai.git"
   },
   "bugs": {
-    "url": "https://github.com/jasyscom-corp/jasysai/issues"
+    "url": "https://github.com/jasyswork/jasysai/issues"
   },
-  "homepage": "https://github.com/jasyscom-corp/jasysai#readme"
+  "homepage": "https://github.com/jasyswork/jasysai#readme"
 }

@@ -131,7 +131,7 @@ git push origin main
 ### Option 3: Deploy Button (Add to README)
 Add this to your `README.md`:
 ```markdown
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/jasyscom-corp/jasysai)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/jasyswork/jasysai)
 ```
 
 ## 📊 Deployment Status

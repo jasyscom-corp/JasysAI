@@ -4,7 +4,7 @@ A well-organized, maintainable AI gateway application built with modern JavaScri
 
 ## 🚀 One-Click Deploy
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/jasyscom-corp/jasysai)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/jasyswork/jasysai)
 
 **Click the button above to deploy instantly to Cloudflare Workers!**
 
