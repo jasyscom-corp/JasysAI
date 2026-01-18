@@ -33,6 +33,11 @@ export function ApiDocsPage(request) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
   <!-- Navigation -->
@@ -258,43 +263,401 @@ print(response.choices[0].message.content)</code></pre>
   <section class="py-12 px-6">
     <div class="max-w-6xl mx-auto">
       <h2 class="text-3xl font-bold mb-8 text-center">Code Examples</h2>
-      
-      <div class="grid md:grid-cols-2 gap-8">
+      <p class="text-slate-300 text-center mb-12 max-w-2xl mx-auto">
+        Integrate JasysAI into your applications with these ready-to-use code examples in multiple programming languages.
+      </p>
+
+      <div class="space-y-8">
+        <!-- Python -->
         <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
-          <h3 class="text-xl font-bold mb-4 text-blue-400">Python</h3>
+          <h3 class="text-xl font-bold mb-4 text-blue-400">🐍 Python</h3>
           <pre><code class="language-python">import openai
 
+# Initialize client
 client = openai.OpenAI(
-    api_key="your-api-key",
-    base_url="${currentUrl}/v1"
+   api_key="your-api-key",
+   base_url="${currentUrl}/v1"
 )
 
+# Make a chat completion request
 response = client.chat.completions.create(
-    model="openai/gpt-4",
-    messages=[
-        {"role": "user", "content": "Hello!"}
-    ]
+   model="openai/gpt-4",
+   messages=[
+       {"role": "system", "content": "You are a helpful assistant."},
+       {"role": "user", "content": "Hello! Tell me about JasysAI."}
+   ],
+   temperature=0.7,
+   max_tokens=150
 )
 
 print(response.choices[0].message.content)</code></pre>
         </div>
 
+        <!-- JavaScript/Node.js -->
         <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
-          <h3 class="text-xl font-bold mb-4 text-green-400">JavaScript</h3>
+          <h3 class="text-xl font-bold mb-4 text-yellow-400">🟨 JavaScript/Node.js</h3>
           <pre><code class="language-javascript">import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: 'your-api-key',
-  baseURL: '${currentUrl}/v1'
+ apiKey: 'your-api-key',
+ baseURL: '${currentUrl}/v1'
 });
 
 async function chat() {
-  const completion = await openai.chat.completions.create({
-    model: 'openai/gpt-4',
-    messages: [{ role: 'user', content: 'Hello!' }]
-  });
+ try {
+   const completion = await openai.chat.completions.create({
+     model: 'openai/gpt-4',
+     messages: [
+       { role: 'system', content: 'You are a helpful assistant.' },
+       { role: 'user', content: 'Hello! Tell me about JasysAI.' }
+     ],
+     temperature: 0.7,
+     max_tokens: 150
+   });
 
-  console.log(completion.choices[0].message.content);
+   console.log(completion.choices[0].message.content);
+ } catch (error) {
+   console.error('Error:', error);
+ }
+}
+
+chat();</code></pre>
+        </div>
+
+        <!-- PHP -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
+          <h3 class="text-xl font-bold mb-4 text-purple-400">🐘 PHP</h3>
+          <pre><code class="language-php"><?php
+
+// Using cURL
+function chatCompletion($message, $apiKey) {
+   $url = "${currentUrl}/v1/chat/completions";
+
+   $data = [
+       "model" => "openai/gpt-4",
+       "messages" => [
+           ["role" => "system", "content" => "You are a helpful assistant."],
+           ["role" => "user", "content" => $message]
+       ],
+       "temperature" => 0.7,
+       "max_tokens" => 150
+   ];
+
+   $ch = curl_init($url);
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+   curl_setopt($ch, CURLOPT_POST, true);
+   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+   curl_setopt($ch, CURLOPT_HTTPHEADER, [
+       "Authorization: Bearer " . $apiKey,
+       "Content-Type: application/json"
+   ]);
+
+   $response = curl_exec($ch);
+   $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+   curl_close($ch);
+
+   if ($httpCode === 200) {
+       $result = json_decode($response, true);
+       return $result['choices'][0]['message']['content'];
+   } else {
+       throw new Exception("API Error: " . $response);
+   }
+}
+
+// Usage
+try {
+   $response = chatCompletion("Hello! Tell me about JasysAI.", "your-api-key");
+   echo $response;
+} catch (Exception $e) {
+   echo "Error: " . $e->getMessage();
+}
+
+?></code></pre>
+        </div>
+
+        <!-- cURL -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
+          <h3 class="text-xl font-bold mb-4 text-green-400">📡 cURL (Command Line)</h3>
+          <pre><code class="language-bash"># Basic chat completion
+curl -X POST "${currentUrl}/v1/chat/completions" \\
+ -H "Authorization: Bearer your-api-key" \\
+ -H "Content-Type: application/json" \\
+ -d '{
+   "model": "openai/gpt-4",
+   "messages": [
+     {"role": "system", "content": "You are a helpful assistant."},
+     {"role": "user", "content": "Hello! Tell me about JasysAI."}
+   ],
+   "temperature": 0.7,
+   "max_tokens": 150
+ }'
+
+# Streaming response
+curl -X POST "${currentUrl}/v1/chat/completions" \\
+ -H "Authorization: Bearer your-api-key" \\
+ -H "Content-Type: application/json" \\
+ -d '{
+   "model": "openai/gpt-4",
+   "messages": [{"role": "user", "content": "Tell me a story"}],
+   "stream": true
+ }'</code></pre>
+        </div>
+
+        <!-- Go -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
+          <h3 class="text-xl font-bold mb-4 text-cyan-400">🐹 Go</h3>
+          <pre><code class="language-go">package main
+
+import (
+   "bytes"
+   "encoding/json"
+   "fmt"
+   "io"
+   "net/http"
+)
+
+type ChatMessage struct {
+   Role    string \`json:"role"\`
+   Content string \`json:"content"\`
+}
+
+type ChatRequest struct {
+   Model       string        \`json:"model"\`
+   Messages    []ChatMessage \`json:"messages"\`
+   Temperature float64       \`json:"temperature,omitempty"\`
+   MaxTokens   int           \`json:"max_tokens,omitempty"\`
+}
+
+type ChatResponse struct {
+   Choices []struct {
+       Message ChatMessage \`json:"message"\`
+   } \`json:"choices"\`
+}
+
+func chatCompletion(apiKey, message string) (string, error) {
+   url := "${currentUrl}/v1/chat/completions"
+
+   reqBody := ChatRequest{
+       Model: "openai/gpt-4",
+       Messages: []ChatMessage{
+           {Role: "system", Content: "You are a helpful assistant."},
+           {Role: "user", Content: message},
+       },
+       Temperature: 0.7,
+       MaxTokens:   150,
+   }
+
+   jsonData, err := json.Marshal(reqBody)
+   if err != nil {
+       return "", err
+   }
+
+   req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+   if err != nil {
+       return "", err
+   }
+
+   req.Header.Set("Authorization", "Bearer "+apiKey)
+   req.Header.Set("Content-Type", "application/json")
+
+   client := &http.Client{}
+   resp, err := client.Do(req)
+   if err != nil {
+       return "", err
+   }
+   defer resp.Body.Close()
+
+   body, err := io.ReadAll(resp.Body)
+   if err != nil {
+       return "", err
+   }
+
+   if resp.StatusCode != 200 {
+       return "", fmt.Errorf("API error: %s", string(body))
+   }
+
+   var chatResp ChatResponse
+   if err := json.Unmarshal(body, &chatResp); err != nil {
+       return "", err
+   }
+
+   if len(chatResp.Choices) > 0 {
+       return chatResp.Choices[0].Message.Content, nil
+   }
+
+   return "", fmt.Errorf("no response generated")
+}
+
+func main() {
+   response, err := chatCompletion("your-api-key", "Hello! Tell me about JasysAI.")
+   if err != nil {
+       fmt.Printf("Error: %v\\n", err)
+       return
+   }
+   fmt.Println(response)
+}</code></pre>
+        </div>
+
+        <!-- Ruby -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
+          <h3 class="text-xl font-bold mb-4 text-red-400">💎 Ruby</h3>
+          <pre><code class="language-ruby">require 'net/http'
+require 'json'
+
+def chat_completion(api_key, message)
+ url = URI("${currentUrl}/v1/chat/completions")
+
+ request_body = {
+   model: "openai/gpt-4",
+   messages: [
+     { role: "system", content: "You are a helpful assistant." },
+     { role: "user", content: message }
+   ],
+   temperature: 0.7,
+   max_tokens: 150
+ }
+
+ http = Net::HTTP.new(url.host, url.port)
+ http.use_ssl = true
+
+ request = Net::HTTP::Post.new(url)
+ request['Authorization'] = "Bearer #{api_key}"
+ request['Content-Type'] = 'application/json'
+ request.body = request_body.to_json
+
+ response = http.request(request)
+
+ if response.code == '200'
+   data = JSON.parse(response.body)
+   return data['choices'][0]['message']['content']
+ else
+   raise "API Error: #{response.body}"
+ end
+end
+
+# Usage
+begin
+ response = chat_completion("your-api-key", "Hello! Tell me about JasysAI.")
+ puts response
+rescue => e
+ puts "Error: #{e.message}"
+end</code></pre>
+        </div>
+
+        <!-- Java -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
+          <h3 class="text-xl font-bold mb-4 text-orange-400">☕ Java</h3>
+          <pre><code class="language-java">import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class JasysAIExample {
+   private static final String API_URL = "${currentUrl}/v1/chat/completions";
+   private static final HttpClient client = HttpClient.newHttpClient();
+   private static final ObjectMapper mapper = new ObjectMapper();
+
+   public static String chatCompletion(String apiKey, String message) throws IOException, InterruptedException {
+       // Create request body
+       String requestBody = "{\\"model\\": \\"openai/gpt-4\\", \\"messages\\": [" +
+           "{\\"role\\": \\"system\\", \\"content\\": \\"You are a helpful assistant.\\"}," +
+           "{\\"role\\": \\"user\\", \\"content\\": \\"" + message + "\\"}]," +
+           "\\"temperature\\": 0.7, \\"max_tokens\\": 150}";
+
+       // Create HTTP request
+       HttpRequest request = HttpRequest.newBuilder()
+           .uri(URI.create(API_URL))
+           .header("Authorization", "Bearer " + apiKey)
+           .header("Content-Type", "application/json")
+           .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+           .build();
+
+       // Send request
+       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+       if (response.statusCode() == 200) {
+           JsonNode root = mapper.readTree(response.body());
+           return root.path("choices").get(0).path("message").path("content").asText();
+       } else {
+           throw new RuntimeException("API Error: " + response.body());
+       }
+   }
+
+   public static void main(String[] args) {
+       try {
+           String response = chatCompletion("your-api-key", "Hello! Tell me about JasysAI.");
+           System.out.println(response);
+       } catch (Exception e) {
+           System.err.println("Error: " + e.getMessage());
+       }
+   }
+}</code></pre>
+        </div>
+
+        <!-- C# -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
+          <h3 class="text-xl font-bold mb-4 text-blue-500">🔷 C#</h3>
+          <pre><code class="language-csharp">using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+
+class JasysAIExample
+{
+   private static readonly HttpClient client = new HttpClient();
+   private const string API_URL = "${currentUrl}/v1/chat/completions";
+
+   public static async Task<string> ChatCompletion(string apiKey, string message)
+   {
+       var requestBody = new
+       {
+           model = "openai/gpt-4",
+           messages = new[]
+           {
+               new { role = "system", content = "You are a helpful assistant." },
+               new { role = "user", content = message }
+           },
+           temperature = 0.7,
+           max_tokens = 150
+       };
+
+       var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+       var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+       client.DefaultRequestHeaders.Authorization =
+           new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+
+       var response = await client.PostAsync(API_URL, content);
+
+       if (response.IsSuccessStatusCode)
+       {
+           var responseContent = await response.Content.ReadAsStringAsync();
+           var jsonResponse = JObject.Parse(responseContent);
+           return jsonResponse["choices"][0]["message"]["content"].ToString();
+       }
+       else
+       {
+           var errorContent = await response.Content.ReadAsStringAsync();
+           throw new Exception($"API Error: {errorContent}");
+       }
+   }
+
+   public static async Task Main(string[] args)
+   {
+       try
+       {
+           string response = await ChatCompletion("your-api-key", "Hello! Tell me about JasysAI.");
+           Console.WriteLine(response);
+       }
+       catch (Exception e)
+       {
+           Console.WriteLine($"Error: {e.Message}");
+       }
+   }
 }</code></pre>
         </div>
       </div>
