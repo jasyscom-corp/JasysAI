@@ -752,7 +752,7 @@ export const LoginPage = () => `
   </nav>
 
   <!-- Main Content -->
-  <div class="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
+  <div class="pt-32 pb-20 px-6 flex items-center justify-center" style="min-height: calc(100vh - 200px);">
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <div class="text-3xl font-black text-white mb-2">${CONFIG.site_name}</div>
@@ -904,7 +904,7 @@ export const RegisterPage = () => `
   </nav>
 
   <!-- Main Content -->
-  <div class="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
+  <div class="pt-32 pb-20 px-6 flex items-center justify-center" style="min-height: calc(100vh - 200px);">
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <div class="text-3xl font-black text-white mb-2">${CONFIG.site_name}</div>
