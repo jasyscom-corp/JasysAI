@@ -101,8 +101,45 @@ export async function setupRoutes(request, env) {
     });
   }
 
-  // 404
-  return new Response('Not Found', { status: 404 });
+  // 404 - Custom Not Found Page
+  return new Response(getNotFoundPage(path), { 
+    status: 404,
+    headers: { 'Content-Type': 'text/html' }
+  });
+}
+
+function getNotFoundPage(path) {
+  return `
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen flex items-center justify-center px-6">
+  <div class="max-w-2xl w-full text-center">
+    <div class="mb-8">
+      <svg class="w-20 h-20 mx-auto text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    </div>
+    <h1 class="text-4xl font-bold mb-4">Page Not Found</h1>
+    <h2 class="text-2xl text-red-400 mb-6">404 Error</h2>
+    <p class="text-slate-300 mb-8">
+      The page you're looking for doesn't exist or has been moved.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/" class="inline-flex items-center justify-center gap-2 bg-brand px-6 py-3 rounded-xl font-bold hover:bg-brand/90 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        Back to Home
+      </a>
+      <button onclick="location.href='/app'" class="inline-flex items-center justify-center gap-2 bg-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-600 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        Dashboard
+      </button>
+    </div>
+    <p class="text-slate-500 text-sm mt-8">Requested URL: ${path}</p>
+  </div>
+</body></html>`;
 }
 
 function getGuestChatHTML() {

@@ -301,7 +301,7 @@ export const LandingPage = () => `
           
           <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
             <h4 class="text-lg font-bold text-white mb-3">📚 Comprehensive Docs</h4>
-            <p class="text-slate-400">Detailed documentation with examples for all programming languages. <a href="/api-docs" class="text-brand hover:underline">View Documentation →</a></p>
+            <p class="text-slate-400">Detailed documentation with examples for all programming languages. <a href="/app" class="text-brand hover:underline">Get API Key →</a></p>
           </div>
           
           <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
