@@ -1,33 +1,19 @@
-name = "jasysai"
+name = "ai"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Environment configurations
-[env.production]
-name = "ai"
-
-[env.staging]
-name = "ai-staging"
-
-# KV Namespaces - Uncomment and configure when you have actual KV namespaces
-# [[kv_namespaces]]
-# binding = "JASYSAI_KV"
-# id = "your-actual-kv-id"
-# preview_id = "your-preview-kv-id"
-
-# Note: Create KV namespace first: wrangler kv:namespace create JASYSAI_KV
+# KV Namespaces
+[[kv_namespaces]]
+binding = "JASYSAI_KV"
+id = "jasysai-kv"
+preview_id = "jasysai-kv-preview"
 
 # Environment Variables
 [vars]
 ENVIRONMENT = "production"
 SITE_NAME = "JasyAI"
-SITE_URL = "https://jasysai.workers.dev"
-
-[env.staging.vars]
-ENVIRONMENT = "staging"
-SITE_NAME = "JasyAI (Staging)"
-SITE_URL = "https://jasysai-staging.workers.dev"
+SITE_URL = "https://ai.jasyscom.workers.dev"
 
 # Secrets (set via: wrangler secret put <KEY>)
 # Required secrets:

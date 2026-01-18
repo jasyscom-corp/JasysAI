@@ -29,9 +29,20 @@ See [Free Plan Setup Guide](FREE_PLAN_SETUP.md) for detailed free plan configura
 
 ### 📊 Deployment Status
 - **Status**: ✅ Successfully Deployed
-- **URL**: https://ai.jasyscom-corp.workers.dev
+- **URL**: https://ai.jasyscom.workers.dev
 - **Plan**: Cloudflare Workers Free Plan
 - **Last Updated**: January 18, 2026
+
+### 🔐 Security Features
+- **Cloudflare Access Integration**: JWT validation for secure authentication
+- **Zero-Trust Security**: All requests validated through Cloudflare Access
+- **Dynamic URL Detection**: Automatic domain adaptation without code changes
+- **Role-Based Access**: Separate user and admin authentication flows
+
+### 📱 Mobile Responsiveness
+- **Responsive Dashboards**: Mobile-optimized user and admin interfaces
+- **Touch-Friendly Navigation**: Collapsible mobile menus with smooth animations
+- **Adaptive Layouts**: Optimized for all screen sizes and devices
 
 ## 🏗️ Project Structure
 
@@ -149,10 +160,12 @@ src/
 - **Admin Dashboard**: User management, system settings, usage analytics (secure access)
 
 ### API Layer
-- OpenAI-compatible API endpoints
-- RESTful API design
-- Proper error handling
-- Request validation
+- OpenAI-compatible API endpoints with full compatibility
+- RESTful API design with comprehensive error handling
+- Request validation and rate limiting
+- Multi-language SDK examples (Python, JavaScript, PHP, Go, Ruby, Java, C#)
+- Dynamic documentation with live code examples
+- Streaming support for real-time responses
 
 ### Database Layer
 - KV storage abstraction
@@ -267,18 +280,24 @@ src/
 
 ### ✅ Free Plan Deployment
 ```bash
-# Deploy to Cloudflare Workers Free Plan
-npm run deploy
+# Automatic deployment with KV setup (Windows/Mac/Linux)
+npm run deploy:auto
 
-# Or using wrangler directly
-wrangler deploy
+# Or manual deployment
+npm run deploy
 
 # Preview locally
 npm run dev
 ```
 
+### 🔧 Automatic Setup
+The deployment script automatically:
+- Creates KV namespaces for data storage
+- Binds KV to the worker
+- Deploys to `https://ai.jasyscom.workers.dev`
+
 ### Environment Variables
-- `JASYSAI_KV`: KV namespace binding (Free tier: 1GB storage)
+- `JASYSAI_KV`: KV namespace binding (auto-created)
 - `OPENROUTER_KEY`: OpenRouter API key
 - `ADMIN_USER`: Admin username
 - `ADMIN_PASS`: Admin password
