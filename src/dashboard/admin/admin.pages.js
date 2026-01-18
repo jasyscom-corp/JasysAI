@@ -43,10 +43,6 @@ export function AdminApp(data) {
             <nav style="display: flex; gap: 1rem;">
                 <a href="/admin/dashboard" style="color: #1e293b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; background: #f1f5f9;">Dashboard</a>
                 <a href="/admin/users" style="color: #64748b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Users</a>
-                <a href="/admin/models" style="color: #64748b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Models</a>
-                <a href="/admin/packages" style="color: #64748b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Packages</a>
-                <a href="/admin/content" style="color: #64748b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Content</a>
-                <a href="/admin/settings" style="color: #64748b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Settings</a>
                 <a href="/admin" style="color: #dc2626; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Logout</a>
             </nav>
         </div>

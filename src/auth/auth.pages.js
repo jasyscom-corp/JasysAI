@@ -784,25 +784,72 @@ export const LoginPage = () => `
     
   </div>
 
+  <!-- Footer -->
+  <footer class="bg-slate-900/80 backdrop-blur-sm border-t border-slate-800/50 py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 font-bold text-xl text-white mb-4">
+            ${LOGO_SVG} ${CONFIG.site_name}
+          </div>
+          <p class="text-slate-400 text-sm">
+            Your gateway to powerful AI models with simple, transparent pricing.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Product</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="#features" class="hover:text-white transition">Features</a></li>
+            <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="/api-docs" class="hover:text-white transition">API Docs</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Company</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="/about" class="hover:text-white transition">About</a></li>
+            <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+            <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Legal</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="/privacy-policy" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="/terms-of-service" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="/security" class="hover:text-white transition">Security</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800/50 pt-8 text-center text-slate-400 text-sm">
+        <p>&copy; 2026 ${CONFIG.site_name}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script>
     async function handleLogin(event) {
       event.preventDefault();
       const btn = document.getElementById('loginBtn');
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      
+
       btn.disabled = true;
       btn.textContent = 'Signing in...';
-      
+
       try {
         const response = await fetch('/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, pass: password })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.ok) {
           localStorage.setItem('t', data.token);
           localStorage.setItem('role', data.role);
@@ -817,9 +864,9 @@ export const LoginPage = () => `
         btn.textContent = 'Sign In';
       }
     }
-    
+
     function showRegister() {
-      location.reload();
+      location.href = '/auth/register';
     }
   </script>
 </body></html>`;
@@ -894,6 +941,53 @@ export const RegisterPage = () => `
     
   </div>
 
+  <!-- Footer -->
+  <footer class="bg-slate-900/80 backdrop-blur-sm border-t border-slate-800/50 py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 font-bold text-xl text-white mb-4">
+            ${LOGO_SVG} ${CONFIG.site_name}
+          </div>
+          <p class="text-slate-400 text-sm">
+            Your gateway to powerful AI models with simple, transparent pricing.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Product</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="#features" class="hover:text-white transition">Features</a></li>
+            <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="/api-docs" class="hover:text-white transition">API Docs</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Company</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="/about" class="hover:text-white transition">About</a></li>
+            <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+            <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Legal</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="/privacy-policy" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="/terms-of-service" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="/security" class="hover:text-white transition">Security</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800/50 pt-8 text-center text-slate-400 text-sm">
+        <p>&copy; 2026 ${CONFIG.site_name}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script>
     async function handleRegister(event) {
       event.preventDefault();
@@ -901,19 +995,19 @@ export const RegisterPage = () => `
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      
+
       btn.disabled = true;
       btn.textContent = 'Creating account...';
-      
+
       try {
         const response = await fetch('/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, pass: password })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.ok) {
           alert('Account created successfully! Please sign in.');
           showLogin();
@@ -927,9 +1021,9 @@ export const RegisterPage = () => `
         btn.textContent = 'Create Account';
       }
     }
-    
+
     function showLogin() {
-      location.reload();
+      location.href = '/app';
     }
   </script>
 </body></html>`;
@@ -966,25 +1060,72 @@ export const AdminLoginPage = () => `
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="bg-slate-900/80 backdrop-blur-sm border-t border-slate-800/50 py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 font-bold text-xl text-white mb-4">
+            ${LOGO_SVG} ${CONFIG.site_name}
+          </div>
+          <p class="text-slate-400 text-sm">
+            Your gateway to powerful AI models with simple, transparent pricing.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Product</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="#features" class="hover:text-white transition">Features</a></li>
+            <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
+            <li><a href="/api-docs" class="hover:text-white transition">API Docs</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Company</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="/about" class="hover:text-white transition">About</a></li>
+            <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+            <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white mb-4">Legal</h4>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li><a href="/privacy-policy" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="/terms-of-service" class="hover:text-white transition">Terms of Service</a></li>
+            <li><a href="/security" class="hover:text-white transition">Security</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800/50 pt-8 text-center text-slate-400 text-sm">
+        <p>&copy; 2026 ${CONFIG.site_name}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script>
     async function handleAdminLogin(event) {
       event.preventDefault();
       const btn = document.getElementById('loginBtn');
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      
+
       btn.disabled = true;
       btn.textContent = 'Signing in...';
-      
+
       try {
         const response = await fetch('/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user: username, pass: password })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.ok) {
           localStorage.setItem('adm_t', data.token);
           localStorage.setItem('role', data.role);

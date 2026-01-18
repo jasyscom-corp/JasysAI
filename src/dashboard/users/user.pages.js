@@ -127,11 +127,16 @@ export function UserApp(user) {
         }
         
         function viewUsage() {
-            window.location.href = '/app/usage';
+            // Show overview tab which contains usage metrics
+            showTab('overview');
+            // Scroll to usage section
+            setTimeout(() => {
+                document.querySelector('.stat-card h3').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
-        
+
         function manageAccount() {
-            window.location.href = '/app/account';
+            showTab('account');
         }
         
         function purchasePackage(packageId) {
