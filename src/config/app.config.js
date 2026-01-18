@@ -1,6 +1,6 @@
 export default {
   site_name: "Jasys AI",
-  site_url: "https://ai.jasyscom-corp.workers.dev",
+  site_url: "https://ai.jasyscom.workers.dev",
   admin_user: "jasyscorp",
   admin_pass: "Jasyscorp-admin123000",
   default_credits: 5000,

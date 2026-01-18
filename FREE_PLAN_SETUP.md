@@ -5,7 +5,7 @@ This document explains how JasyAI is configured to work with Cloudflare Workers 
 ## ✅ Deployment Status: SUCCESS
 
 **Last Updated**: January 18, 2026  
-**Deployment URL**: https://ai.jasyscom-corp.workers.dev  
+**Deployment URL**: https://ai.jasyscom.workers.dev
 **Status**: ✅ Successfully deployed to Free Plan  
 **Cost**: $0/month for basic usage
 
@@ -107,7 +107,7 @@ The configuration has been validated and successfully deployed:
 ✅ Total Upload: 73.79 KiB / gzip: 14.30 KiB
 ✅ Worker bindings configured correctly
 ✅ Deployed successfully to Free Plan
-✅ URL: https://ai.jasyscom-corp.workers.dev
+✅ URL: https://ai.jasyscom.workers.dev
 ```
 
 ### Configuration Validation

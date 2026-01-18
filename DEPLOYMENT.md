@@ -16,7 +16,7 @@ This application is fully compatible with Cloudflare Workers Free Plan:
 - **New Features**: SEO optimization, guest chat, model management, payment packages
 - **Documentation**: Updated README and project structure
 
-> 🎯 **Deployment Status**: ✅ Successfully deployed at https://ai.jasyscom-corp.workers.dev
+> 🎯 **Deployment Status**: ✅ Successfully deployed at https://ai.jasyscom.workers.dev
 
 ## 📋 Prerequisites
 
