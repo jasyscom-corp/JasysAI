@@ -41,17 +41,18 @@ export async function ContentPage(env, pageKey) {
 <!DOCTYPE html><html lang="en" class="dark"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${seoMeta.title} - ${CONFIG.site_name}</title>
   <meta name="description" content="${seoMeta.description}">
   <meta name="keywords" content="${seoMeta.keywords}">
   <meta name="author" content="${CONFIG.site_name}">
-  <meta property="og:title" content="${seoMeta.title}">
+  <meta property="og:title" content="${seoMeta.title} - ${CONFIG.site_name}">
   <meta property="og:description" content="${seoMeta.description}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${CONFIG.site_url}${pageKey === 'about' ? '' : '/' + pageKey.replace('_', '-')}">
   <meta property="og:site_name" content="${CONFIG.site_name}">
   <meta property="og:image" content="${CONFIG.site_url}/assets/logo.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${seoMeta.title}">
+  <meta name="twitter:title" content="${seoMeta.title} - ${CONFIG.site_name}">
   <meta name="twitter:description" content="${seoMeta.description}">
   <meta name="twitter:image" content="${CONFIG.site_url}/assets/logo.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">

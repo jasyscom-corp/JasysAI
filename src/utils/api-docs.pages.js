@@ -6,6 +6,7 @@ export function ApiDocsPage() {
 <!DOCTYPE html><html lang="en" class="dark"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - ${CONFIG.site_name}</title>
   <meta name="description" content="JasysAI API Documentation - Complete guide for integrating with our OpenAI-compatible API. Includes examples, SDKs, and best practices.">
   <meta name="keywords" content="JasysAI API, OpenAI compatible, AI API documentation, chat completions, API integration, developer guide">
   <meta name="author" content="${CONFIG.site_name}">
