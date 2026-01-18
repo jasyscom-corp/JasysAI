@@ -35,8 +35,33 @@ export async function ContentPage(env, pageKey) {
 
     const config = pageConfig[pageKey] || { title: 'Content', description: '' };
 
+  const seoMeta = getSEOMeta(pageKey, content, config);
+  
   return `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="${seoMeta.description}">
+  <meta name="keywords" content="${seoMeta.keywords}">
+  <meta name="author" content="${CONFIG.site_name}">
+  <meta property="og:title" content="${seoMeta.title}">
+  <meta property="og:description" content="${seoMeta.description}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${CONFIG.site_url}${pageKey === 'about' ? '' : '/' + pageKey.replace('_', '-')}">
+  <meta property="og:site_name" content="${CONFIG.site_name}">
+  <meta property="og:image" content="${CONFIG.site_url}/assets/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${seoMeta.title}">
+  <meta name="twitter:description" content="${seoMeta.description}">
+  <meta name="twitter:image" content="${CONFIG.site_url}/assets/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/site.webmanifest">
+  <meta name="theme-color" content="#7c3aed">
+  <script type="application/ld+json">${seoMeta.structuredData}</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
   <!-- Navigation -->
   <nav class="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 z-50">
@@ -304,9 +329,18 @@ function getErrorPage(pageKey, errorMessage) {
   };
   
   const title = pageTitles[pageKey] || 'Page';
+  const baseUrl = CONFIG.site_url || 'https://jasysai.jasyscom-corp.workers.dev';
   
   return `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="${title} page temporarily unavailable on ${CONFIG.site_name}. We're working to resolve the issue.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
   <!-- Navigation -->
   <nav class="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 z-50">
@@ -414,4 +448,83 @@ function getErrorPage(pageKey, errorMessage) {
     }
   </script>
 </body></html>`;
+}
+
+function getSEOMeta(pageKey, content, config) {
+  const baseUrl = CONFIG.site_url || 'https://jasysai.jasyscom-corp.workers.dev';
+  const pageUrls = {
+    about: '',
+    blog: '/blog',
+    contact: '/contact',
+    privacy_policy: '/privacy-policy',
+    terms_of_service: '/terms-of-service',
+    security: '/security'
+  };
+  
+  const seoData = {
+    about: {
+      title: `About ${CONFIG.site_name} - AI Platform for Developers`,
+      description: `Learn more about ${CONFIG.site_name}, a leading AI platform providing access to powerful language models through simple, transparent APIs. Our mission is to democratize AI technology.`,
+      keywords: 'AI platform, artificial intelligence, language models, API, developers, machine learning, ${CONFIG.site_name.toLowerCase()}'
+    },
+    blog: {
+      title: `${CONFIG.site_name} Blog - Latest AI Updates and News`,
+      description: `Stay updated with the latest news, updates, and insights about ${CONFIG.site_name} and the world of artificial intelligence and machine learning.`,
+      keywords: 'AI blog, artificial intelligence news, machine learning updates, ${CONFIG.site_name.toLowerCase()}, tech blog'
+    },
+    contact: {
+      title: `Contact ${CONFIG.site_name} - Support and Inquiries`,
+      description: `Get in touch with the ${CONFIG.site_name} team for support, questions, or inquiries. We're here to help you succeed with our AI platform.`,
+      keywords: 'contact support, AI help, customer service, ${CONFIG.site_name.toLowerCase()}, technical support'
+    },
+    privacy_policy: {
+      title: `Privacy Policy - ${CONFIG.site_name}`,
+      description: `Read ${CONFIG.site_name}'s comprehensive privacy policy to understand how we collect, use, and protect your data and privacy.`,
+      keywords: 'privacy policy, data protection, GDPR, user privacy, ${CONFIG.site_name.toLowerCase()}'
+    },
+    terms_of_service: {
+      title: `Terms of Service - ${CONFIG.site_name}`,
+      description: `Review ${CONFIG.site_name}'s terms of service and conditions for using our AI platform and API services.`,
+      keywords: 'terms of service, legal terms, service agreement, ${CONFIG.site_name.toLowerCase()}, user agreement'
+    },
+    security: {
+      title: `Security - ${CONFIG.site_name}`,
+      description: `Learn about ${CONFIG.site_name}'s comprehensive security measures, data protection, and best practices for keeping your AI applications secure.`,
+      keywords: 'security, data protection, cybersecurity, AI security, ${CONFIG.site_name.toLowerCase()}'
+    }
+  };
+  
+  const seo = seoData[pageKey] || {
+    title: `${config.title} - ${CONFIG.site_name}`,
+    description: config.description,
+    keywords: `${CONFIG.site_name.toLowerCase()}, AI platform, artificial intelligence`
+  };
+  
+  // Structured data for SEO
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": pageKey === 'about' ? "Organization" : "WebPage",
+    "name": CONFIG.site_name,
+    "url": baseUrl + (pageUrls[pageKey] || ''),
+    "description": seo.description,
+    "logo": `${baseUrl}/assets/logo.png`,
+    "sameAs": [
+      // Add social media URLs if available
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "email": `support@${CONFIG.site_name.toLowerCase()}.com`
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${baseUrl}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  });
+  
+  return {
+    ...seo,
+    structuredData: structuredData
+  };
 }
