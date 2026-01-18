@@ -29,20 +29,6 @@ export async function authRoutes(request, env) {
     });
   }
 
-  // Admin login page
-  if (path === '/admin' && method === 'GET') {
-    const cookie = request.headers.get('cookie') || '';
-    const token = cookie.split('adm_t=')[1]?.split(';')[0];
-    if (token) {
-      const sess = await DB.get(env, `sess:${token}`);
-      if (sess && sess.role === 'admin') {
-        return Response.redirect(`${url.origin}/admin/dashboard`, 302);
-      }
-    }
-    return new Response(AdminLoginPage(), {
-      headers: { 'Content-Type': 'text/html' }
-    });
-  }
 
   // Handle login POST
   if (path === '/auth/login' && method === 'POST') {
@@ -86,26 +72,6 @@ export async function authRoutes(request, env) {
     });
   }
 
-  // Handle admin login POST
-  if (path === '/admin/login' && method === 'POST') {
-    const { user, pass } = await request.json();
-    const result = await AuthService.authenticateAdmin(user, pass);
-    
-    if (result.ok) {
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Set-Cookie': `adm_t=${result.token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
-        }
-      });
-    }
-    
-    return new Response(JSON.stringify(result), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
 
   return new Response('Not Found', { status: 404 });
 }

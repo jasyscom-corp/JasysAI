@@ -30,7 +30,7 @@ See [Free Plan Setup Guide](FREE_PLAN_SETUP.md) for detailed free plan configura
 
 ## 🏗️ Project Structure
 
-The application has been completely restructured following software engineering best practices:
+The application follows a clean, modular architecture optimized for Cloudflare Workers:
 
 ```
 src/
@@ -53,82 +53,40 @@ src/
 │       └── user.pages.js
 ├── routes/                 # Routing system
 │   ├── index.js           # Route exports
-│   ├── router.js          # Main router
-│   ├── auth.routes.js     # Authentication routes
-│   ├── admin.routes.js    # Admin routes
-│   ├── user.routes.js     # User routes
-│   └── api.routes.js      # API routes
+│   ├── router.js          # Main router with route resolution
+│   ├── auth.routes.js     # Authentication routes (login, register)
+│   ├── admin.routes.js    # Admin routes (login, dashboard, API)
+│   ├── user.routes.js     # User routes (dashboard, profile)
+│   └── api.routes.js      # API routes (chat, usage, settings)
 ├── db/                     # Database layer
 │   ├── index.js           # Database exports
-│   └── database.js        # Database utilities and billing
+│   └── database.js        # KV storage abstraction and billing
 ├── models/                 # Data models
-│   ├── index.js
-│   ├── user.model.js
-│   ├── chat.model.js
-│   ├── apikey.model.js
-│   └── usage.model.js
+│   ├── index.js           # Model exports
+│   ├── user.model.js      # User data model
+│   ├── chat.model.js      # Chat/message model
+│   ├── apikey.model.js    # API key model
+│   └── usage.model.js     # Usage tracking model
 ├── utils/                  # Utility functions
-│   ├── index.js
-│   ├── assets.js          # Static assets
+│   ├── index.js           # Utility exports
+│   ├── assets.js          # Static assets and constants
 │   ├── helpers.js         # Helper functions
-│   └── logger.js          # Logging system
-├── services/               # Business services
-├── middlewares/            # Request middleware
-├── controllers/            # Request controllers
-├── helpers/               # Additional helpers
-├── constants/             # Application constants
-├── types/                 # TypeScript definitions
-├── interfaces/            # Interface definitions
-├── enums/                 # Enumerations
-├── exceptions/            # Custom exceptions
-├── errors/                # Error handlers
-├── events/                # Event system
-├── hooks/                 # Lifecycle hooks
-├── plugins/               # Plugin system
-├── providers/             # Service providers
-├── repositories/          # Data repositories
-├── factories/             # Object factories
-├── decorators/            # Method decorators
-├── guards/                # Route guards
-├── interceptors/          # Request interceptors
-├── pipes/                 # Data transformation pipes
-├── filters/               # Data filters
-├── validators/            # Input validators
-├── serializers/           # Data serializers
-├── deserializers/         # Data deserializers
-├── transformers/          # Data transformers
-├── mappers/               # Object mappers
-├── builders/              # Object builders
-├── creators/              # Object creators
-├── updaters/              # Update handlers
-├── deleters/              # Delete handlers
-├── finders/               # Query handlers
-├── searchers/             # Search handlers
-├── sorters/               # Sorting utilities
-├── paginators/            # Pagination utilities
-├── aggregators/           # Data aggregation
-├── counters/              # Counting utilities
-├── summarizers/           # Data summarization
-├── calculators/           # Calculation utilities
-├── analyzers/             # Data analysis
-├── processors/            # Data processors
-├── handlers/              # Event handlers
-├── listeners/             # Event listeners
-├── emitters/              # Event emitters
-├── publishers/            # Event publishers
-├── subscribers/           # Event subscribers
-├── consumers/             # Message consumers
-├── producers/             # Message producers
-├── senders/               # Message senders
-├── receivers/             # Message receivers
-├── storages/              # Storage abstractions
-├── caches/                # Caching system
-├── queues/                # Queue management
-├── tasks/                 # Task management
-├── jobs/                  # Job processing
-├── worker.js              # Main Cloudflare Worker
-└── index.js               # Application entry point
+│   └── logger.js          # Structured logging system
+├── worker.js              # Main Cloudflare Worker entry point
+└── index.js               # Application entry point and exports
 ```
+
+### Directory Breakdown
+
+- **`config/`** - Application configuration and settings management
+- **`auth/`** - Authentication services and UI components
+- **`dashboard/`** - Admin and user dashboard components
+- **`routes/`** - HTTP route handlers and routing logic
+- **`db/`** - Database abstraction layer for KV storage
+- **`models/`** - Data models with validation and business logic
+- **`utils/`** - Shared utilities and helper functions
+- **`worker.js`** - Cloudflare Worker main handler
+- **`index.js`** - Application entry point and module exports
 
 ## 🚀 Key Features
 
@@ -187,31 +145,43 @@ src/
 ## 📁 File Organization
 
 ### Configuration (`src/config/`)
-- `app.config.js`: Application settings, packages, rates
-- `config.service.js`: Dynamic configuration management
+- `app.config.js`: Application settings, AI model packages, pricing rates
+- `config.service.js`: Dynamic configuration management and validation
+- `index.js`: Centralized configuration exports
 
 ### Authentication (`src/auth/`)
-- `auth.service.js`: Login, registration, session management
-- `auth.pages.js`: Login/register UI components
+- `auth.service.js`: User/admin authentication, session management, registration
+- `auth.pages.js`: Login, register, and admin login UI components
+- `index.js`: Authentication module exports
 
 ### Routes (`src/routes/`)
-- `router.js`: Main request router
-- Separate route files for different concerns
-- Middleware integration
+- `router.js`: Main request router with route resolution logic
+- `auth.routes.js`: User authentication routes (`/auth/login`, `/auth/register`)
+- `admin.routes.js`: Admin routes (`/admin`, `/admin/login`, `/admin/dashboard`, `/api/admin/*`)
+- `user.routes.js`: User dashboard routes (`/app`, `/app/dashboard`)
+- `api.routes.js`: API endpoints (`/api/chat`, `/api/user/*`, `/api/*`)
+- `index.js`: Route module exports
 
 ### Database (`src/db/`)
-- `database.js`: KV abstraction, billing logic
-- Connection management and utilities
+- `database.js`: KV storage abstraction, usage tracking, billing calculations
+- `index.js`: Database module exports and utilities
 
 ### Models (`src/models/`)
-- Data structures with business logic
-- Validation and transformation methods
-- Type safety and consistency
+- `user.model.js`: User data model with validation and methods
+- `chat.model.js`: Chat and message data model
+- `apikey.model.js`: API key management model
+- `usage.model.js`: Usage tracking and billing model
+- `index.js`: Model exports and relationships
 
 ### Utils (`src/utils/`)
-- `helpers.js`: Common utility functions
-- `logger.js`: Structured logging
-- `assets.js`: Static assets and constants
+- `helpers.js`: Common utility functions and helpers
+- `logger.js`: Structured logging system with levels
+- `assets.js`: Static assets, constants, and UI components
+- `index.js`: Utility module exports
+
+### Core Files
+- `worker.js`: Main Cloudflare Worker entry point with fetch and scheduled handlers
+- `index.js`: Application entry point and module re-exports
 
 ## 🔧 Deployment
 

@@ -7,8 +7,24 @@ export async function adminRoutes(request, env) {
   const path = url.pathname;
   const method = request.method;
 
+  // Admin login page
+  if (path === '/admin' && method === 'GET') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('adm_t=')[1]?.split(';')[0];
+    if (token) {
+      const sess = await DB.get(env, `sess:${token}`);
+      if (sess && sess.role === 'admin') {
+        return Response.redirect(`${url.origin}/admin/dashboard`, 302);
+      }
+    }
+    const { AdminLoginPage } = await import('../auth/auth.pages.js');
+    return new Response(AdminLoginPage(), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
   // Admin dashboard
-  if (path === '/admin' || path === '/admin/dashboard') {
+  if (path === '/admin/dashboard') {
     const cookie = request.headers.get('cookie') || '';
     const token = cookie.split('adm_t=')[1]?.split(';')[0];
     
@@ -24,6 +40,28 @@ export async function adminRoutes(request, env) {
     const data = await AdminController.getDashboardData(env);
     return new Response(AdminApp(data), {
       headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Handle admin login POST
+  if (path === '/admin/login' && method === 'POST') {
+    const { user, pass } = await request.json();
+    const { AuthService } = await import('../auth/auth.service.js');
+    const result = await AuthService.authenticateAdmin(user, pass);
+    
+    if (result.ok) {
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Set-Cookie': `adm_t=${result.token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=604800`
+        }
+      });
+    }
+    
+    return new Response(JSON.stringify(result), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 
