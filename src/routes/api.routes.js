@@ -90,19 +90,19 @@ export async function apiRoutes(request, env) {
     }
 
     try {
-      // Get OpenRouter key from settings
+      // Get API configuration
       const settings = await DB.get(env, 'sys_settings') || {};
-      const openrouterKey = settings.openrouter_key;
+      const proxyApiKey = settings.proxy_api_key || 'your-proxy-api-key';
       
-      if (!openrouterKey) {
-        return new Response(JSON.stringify({ err: 'OpenRouter key not configured' }), { status: 500 });
+      if (!proxyApiKey) {
+        return new Response(JSON.stringify({ err: 'Proxy API key not configured' }), { status: 500 });
       }
 
-      // Call OpenRouter API
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      // Call ai-proxy API
+      const response = await fetch('https://ai-proxy.jasyscom-corp.workers.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openrouterKey}`,
+          'Authorization': `Bearer ${proxyApiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -112,7 +112,9 @@ export async function apiRoutes(request, env) {
       });
 
       if (!response.ok) {
-        throw new Error('OpenRouter API error');
+        const errorData = await response.text();
+        console.error('Proxy API error:', response.status, errorData);
+        throw new Error(`Proxy API error: ${response.status}`);
       }
 
       const data = await response.json();
@@ -160,7 +162,10 @@ export async function apiRoutes(request, env) {
 
     } catch (error) {
       console.error('Chat API error:', error);
-      return new Response(JSON.stringify({ err: 'Failed to process chat' }), { status: 500 });
+      return new Response(JSON.stringify({ 
+        err: 'Failed to process chat',
+        details: error.message 
+      }), { status: 500 });
     }
   }
 
@@ -195,26 +200,28 @@ export async function apiRoutes(request, env) {
     }
 
     try {
-      // Get OpenRouter key from settings
+      // Get API configuration
       const settings = await DB.get(env, 'sys_settings') || {};
-      const openrouterKey = settings.openrouter_key;
+      const proxyApiKey = settings.proxy_api_key || 'your-proxy-api-key';
       
-      if (!openrouterKey) {
+      if (!proxyApiKey) {
         return new Response(JSON.stringify({ err: 'Service unavailable' }), { status: 503 });
       }
 
-      // Forward request to OpenRouter
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      // Forward request to ai-proxy.jasyscom-corp.workers.dev
+      const response = await fetch('https://ai-proxy.jasyscom-corp.workers.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openrouterKey}`,
+          'Authorization': `Bearer ${proxyApiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
       });
 
       if (!response.ok) {
-        throw new Error('OpenRouter API error');
+        const errorData = await response.text();
+        console.error('Proxy API error:', response.status, errorData);
+        throw new Error(`Proxy API error: ${response.status}`);
       }
 
       const data = await response.json();
@@ -230,7 +237,10 @@ export async function apiRoutes(request, env) {
 
     } catch (error) {
       console.error('OpenAI-compatible API error:', error);
-      return new Response(JSON.stringify({ err: 'Service unavailable' }), { status: 503 });
+      return new Response(JSON.stringify({ 
+        err: 'Service unavailable',
+        details: error.message 
+      }), { status: 503 });
     }
   }
 

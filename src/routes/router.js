@@ -1,6 +1,7 @@
 import { DB } from '../db/index.js';
 import { AuthService } from '../auth/auth.service.js';
 import { ContentPage } from '../utils/content.pages.js';
+import { ApiDocsPage } from '../utils/api-docs.pages.js';
 import { authRoutes } from './auth.routes.js';
 import { adminRoutes } from './admin.routes.js';
 import { userRoutes } from './user.routes.js';
@@ -46,6 +47,12 @@ export async function setupRoutes(request, env) {
     }
   }
 
+  // API Documentation page
+  if (path === '/api-docs') {
+    const html = ApiDocsPage();
+    return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+  }
+
   // Authentication routes
   if (path.startsWith('/auth/') || path === '/') {
     return authRoutes(request, env);
@@ -63,6 +70,11 @@ export async function setupRoutes(request, env) {
 
   // API routes
   if (path.startsWith('/api/')) {
+    return apiRoutes(request, env);
+  }
+
+  // OpenAI-compatible API routes (no /api prefix)
+  if (path === '/v1/chat/completions') {
     return apiRoutes(request, env);
   }
 
