@@ -5,10 +5,10 @@ compatibility_flags = ["nodejs_compat"]
 
 # Environment configurations
 [env.production]
-name = "jasysai"
+name = "ai"
 
 [env.staging]
-name = "jasysai-staging"
+name = "ai-staging"
 
 # KV Namespaces - Uncomment and configure when you have actual KV namespaces
 # [[kv_namespaces]]
