@@ -1,14 +1,32 @@
 import { setupRoutes } from './routes/index.js';
 import { logger } from './utils/logger.js';
+import { AuthService } from './auth/auth.service.js';
 
 export default {
   async fetch(request, env, ctx) {
     try {
-      logger.info('Incoming request', { 
-        method: request.method, 
+      logger.info('Incoming request', {
+        method: request.method,
         url: request.url,
         userAgent: request.headers.get('user-agent')
       });
+
+      // Validate Cloudflare Access JWT
+      const authHeader = request.headers.get('Authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.slice(7);
+        const validation = await AuthService.validateCloudflareJWT(token);
+        if (!validation.ok) {
+          logger.warn('Invalid JWT', { error: validation.err });
+          return new Response('Unauthorized', { status: 401 });
+        }
+        // Optionally, attach payload to request for later use
+        request.cloudflareUser = validation.payload;
+      } else {
+        // If Cloudflare Access is enabled, all requests should have JWT
+        logger.warn('No JWT provided');
+        return new Response('Unauthorized', { status: 401 });
+      }
 
       const response = await setupRoutes(request, env);
       

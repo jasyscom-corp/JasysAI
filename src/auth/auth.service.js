@@ -1,5 +1,6 @@
 import { DB } from '../db/index.js';
 import { CONFIG } from '../config/index.js';
+import { jwtVerify, createRemoteJWKSet } from 'jose';
 
 export class AuthService {
   static async authenticateUser(email, password) {
@@ -51,5 +52,18 @@ export class AuthService {
 
   static async getUserByEmail(email) {
     return await DB.get(null, `u:${email}`);
+  }
+
+  static async validateCloudflareJWT(token) {
+    try {
+      const JWKS = createRemoteJWKSet(new URL('https://jasyscom-corp.cloudflareaccess.com/cdn-cgi/access/certs'));
+      const { payload } = await jwtVerify(token, JWKS, {
+        audience: '40c9dc2de1210467f3f35cedc9a6bbf8675695abe8c994b148ce1b0c854d93a0',
+        issuer: 'https://jasyscom-corp.cloudflareaccess.com'
+      });
+      return { ok: true, payload };
+    } catch (error) {
+      return { err: 'Invalid JWT', details: error.message };
+    }
   }
 }

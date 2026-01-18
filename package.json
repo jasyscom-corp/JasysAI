@@ -36,7 +36,9 @@
     "wrangler": "^3.0.0",
     "@cloudflare/workers-types": "^4.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "jose": "^5.2.0"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
