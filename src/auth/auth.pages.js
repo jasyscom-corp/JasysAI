@@ -428,7 +428,7 @@ export const LandingPage = () => `
 </body></html>`;
 
 export const UserApp = (user) => `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard - ${CONFIG.site_name}</title><meta name="description" content="Manage your ${CONFIG.site_name} account, API keys, and usage analytics."><meta name="robots" content="noindex, nofollow"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>"><meta name="theme-color" content="${CONFIG.seo.theme_color}"><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-[#020617] text-slate-200 min-h-screen p-8">
   <div class="max-w-6xl mx-auto">
     <div class="flex justify-between items-center mb-16">
@@ -466,7 +466,7 @@ export const UserApp = (user) => `
         </div>
         <div class="bg-slate-900 border border-slate-800 p-10 rounded-[2.5rem]">
           <div class="text-slate-500 text-sm mb-4 uppercase tracking-widest font-bold">API Base URL (Cursor/IDE)</div>
-          <code class="block bg-black/50 p-4 rounded-2xl text-brand text-xs break-all border border-brand/20">https://jasysai.jasyscom-corp.workers.dev/v1</code>
+          <code class="block bg-black/50 p-4 rounded-2xl text-brand text-xs break-all border border-brand/20">https://ai.jasyscom-corp.workers.dev/v1</code>
         </div>
       </div>
       <div class="bg-slate-900 border border-slate-800 p-10 rounded-[2.5rem]">
@@ -669,7 +669,7 @@ export const UserApp = (user) => `
 </body></html>`;
 
 export const AdminApp = (data) => `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Gateway - ${CONFIG.site_name}</title><meta name="description" content="Admin dashboard for ${CONFIG.site_name} management and analytics."><meta name="robots" content="noindex, nofollow"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>"><meta name="theme-color" content="${CONFIG.seo.theme_color}"><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-black text-slate-300 p-10">
   <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-12">
@@ -720,7 +720,7 @@ export const AdminApp = (data) => `
 
 // Login/Register Pages
 export const LoginPage = () => `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sign In - ${CONFIG.site_name}</title><meta name="description" content="Sign in to your ${CONFIG.site_name} account to access AI models and manage your usage."><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sign In - ${CONFIG.site_name}</title><meta name="description" content="Sign in to your ${CONFIG.site_name} account to access AI models and manage your usage."><meta name="keywords" content="${CONFIG.seo.default_keywords}"><meta name="author" content="${CONFIG.seo.author}"><meta property="og:title" content="Sign In - ${CONFIG.site_name}"><meta property="og:description" content="Sign in to your ${CONFIG.site_name} account to access AI models and manage your usage."><meta property="og:type" content="website"><meta property="og:url" content="${CONFIG.site_url}/app"><meta property="og:site_name" content="${CONFIG.site_name}"><meta property="og:image" content="${CONFIG.site_url}/assets/logo.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Sign In - ${CONFIG.site_name}"><meta name="twitter:description" content="Sign in to your ${CONFIG.site_name} account to access AI models and manage your usage."><meta name="twitter:image" content="${CONFIG.site_url}/assets/logo.png"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>"><meta name="theme-color" content="${CONFIG.seo.theme_color}"><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen grid grid-rows-[auto_1fr_auto]">
   <!-- Navigation -->
   <nav class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50">
@@ -873,7 +873,7 @@ export const LoginPage = () => `
 </body></html>`;
 
 export const RegisterPage = () => `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sign Up - ${CONFIG.site_name}</title><meta name="description" content="Create your ${CONFIG.site_name} account to access AI models and start building amazing applications."><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sign Up - ${CONFIG.site_name}</title><meta name="description" content="Create your ${CONFIG.site_name} account to access AI models and start building amazing applications."><meta name="keywords" content="${CONFIG.seo.default_keywords}"><meta name="author" content="${CONFIG.seo.author}"><meta property="og:title" content="Sign Up - ${CONFIG.site_name}"><meta property="og:description" content="Create your ${CONFIG.site_name} account to access AI models and start building amazing applications."><meta property="og:type" content="website"><meta property="og:url" content="${CONFIG.site_url}/auth/register"><meta property="og:site_name" content="${CONFIG.site_name}"><meta property="og:image" content="${CONFIG.site_url}/assets/logo.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Sign Up - ${CONFIG.site_name}"><meta name="twitter:description" content="Create your ${CONFIG.site_name} account to access AI models and start building amazing applications."><meta name="twitter:image" content="${CONFIG.site_url}/assets/logo.png"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>"><meta name="theme-color" content="${CONFIG.seo.theme_color}"><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen grid grid-rows-[auto_1fr_auto]">
   <!-- Navigation -->
   <nav class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50">
@@ -1031,7 +1031,7 @@ export const RegisterPage = () => `
 </body></html>`;
 
 export const AdminLoginPage = () => `
-<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"></script></head>
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Portal - ${CONFIG.site_name}</title><meta name="description" content="Admin portal for ${CONFIG.site_name} management."><meta name="robots" content="noindex, nofollow"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>"><meta name="theme-color" content="${CONFIG.seo.theme_color}"><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-black text-slate-300 min-h-screen flex items-center justify-center p-6">
   <div class="w-full max-w-md">
     <div class="text-center mb-8">

@@ -330,7 +330,7 @@ function getErrorPage(pageKey, errorMessage) {
   };
   
   const title = pageTitles[pageKey] || 'Page';
-  const baseUrl = CONFIG.site_url || 'https://jasysai.jasyscom-corp.workers.dev';
+  const baseUrl = CONFIG.site_url || 'https://ai.jasyscom-corp.workers.dev';
   
   return `
 <!DOCTYPE html><html lang="en" class="dark"><head>
@@ -452,7 +452,7 @@ function getErrorPage(pageKey, errorMessage) {
 }
 
 function getSEOMeta(pageKey, content, config) {
-  const baseUrl = CONFIG.site_url || 'https://jasysai.jasyscom-corp.workers.dev';
+  const baseUrl = CONFIG.site_url || 'https://ai.jasyscom-corp.workers.dev';
   const pageUrls = {
     about: '',
     blog: '/blog',

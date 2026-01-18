@@ -29,7 +29,7 @@ See [Free Plan Setup Guide](FREE_PLAN_SETUP.md) for detailed free plan configura
 
 ### 📊 Deployment Status
 - **Status**: ✅ Successfully Deployed
-- **URL**: https://jasysai.jasyscom-corp.workers.dev
+- **URL**: https://ai.jasyscom-corp.workers.dev
 - **Plan**: Cloudflare Workers Free Plan
 - **Last Updated**: January 18, 2026
 

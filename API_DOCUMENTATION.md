@@ -7,7 +7,7 @@ JasysAI provides a powerful, OpenAI-compatible API for accessing cutting-edge la
 ## Base URL
 
 ```
-https://jasysai.jasyscom-corp.workers.dev
+https://ai.jasyscom-corp.workers.dev
 ```
 
 ## Quick Start
@@ -26,7 +26,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="your-api-key",
-    base_url="https://jasysai.jasyscom-corp.workers.dev/v1"
+    base_url="https://ai.jasyscom-corp.workers.dev/v1"
 )
 
 response = client.chat.completions.create(
@@ -49,7 +49,7 @@ Authorization: Bearer your-api-key
 
 ### Getting Your API Key
 
-1. Sign up at [JasysAI Dashboard](https://jasysai.jasyscom-corp.workers.dev/app)
+1. Sign up at [JasysAI Dashboard](https://ai.jasyscom-corp.workers.dev/app)
 2. Navigate to API Keys section
 3. Generate a new API key
 4. Copy and securely store your API key
@@ -104,7 +104,7 @@ Create chat completions with advanced language models.
 #### Example Request
 
 ```bash
-curl -X POST "https://jasysai.jasyscom-corp.workers.dev/v1/chat/completions" \
+curl -X POST "https://ai.jasyscom-corp.workers.dev/v1/chat/completions" \
   -H "Authorization: Bearer your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -149,7 +149,7 @@ curl -X POST "https://jasysai.jasyscom-corp.workers.dev/v1/chat/completions" \
 Enable streaming for real-time responses:
 
 ```javascript
-const response = await fetch('https://jasysai.jasyscom-corp.workers.dev/v1/chat/completions', {
+const response = await fetch('https://ai.jasyscom-corp.workers.dev/v1/chat/completions', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer your-api-key',
@@ -183,7 +183,7 @@ import openai
 
 client = openai.OpenAI(
     api_key="your-api-key",
-    base_url="https://jasysai.jasyscom-corp.workers.dev/v1"
+    base_url="https://ai.jasyscom-corp.workers.dev/v1"
 )
 
 # Simple chat
@@ -211,7 +211,7 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: 'your-api-key',
-  baseURL: 'https://jasysai.jasyscom-corp.workers.dev/v1'
+  baseURL: 'https://ai.jasyscom-corp.workers.dev/v1'
 });
 
 async function chat() {
@@ -234,7 +234,7 @@ chat();
 
 ```bash
 # Basic request
-curl -X POST "https://jasysai.jasyscom-corp.workers.dev/v1/chat/completions" \
+curl -X POST "https://ai.jasyscom-corp.workers.dev/v1/chat/completions" \
   -H "Authorization: Bearer your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -243,7 +243,7 @@ curl -X POST "https://jasysai.jasyscom-corp.workers.dev/v1/chat/completions" \
   }'
 
 # Streaming request
-curl -X POST "https://jasysai.jasyscom-corp.workers.dev/v1/chat/completions" \
+curl -X POST "https://ai.jasyscom-corp.workers.dev/v1/chat/completions" \
   -H "Authorization: Bearer your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -286,7 +286,7 @@ from openai import OpenAIError
 
 client = OpenAI(
     api_key="your-api-key",
-    base_url="https://jasysai.jasyscom-corp.workers.dev/v1"
+    base_url="https://ai.jasyscom-corp.workers.dev/v1"
 )
 
 try:
@@ -324,7 +324,7 @@ except openai.APIError as e:
 ### Check Your Usage
 
 ```bash
-curl -X GET "https://jasysai.jasyscom-corp.workers.dev/api/user/stats" \
+curl -X GET "https://ai.jasyscom-corp.workers.dev/api/user/stats" \
   -H "Authorization: Bearer your-api-key"
 ```
 
@@ -404,4 +404,4 @@ curl -X GET "https://jasysai.jasyscom-corp.workers.dev/api/user/stats" \
 
 ---
 
-**Ready to get started?** [Sign up for your API key](https://jasysai.jasyscom-corp.workers.dev/app) and start building with JasysAI today!
+**Ready to get started?** [Sign up for your API key](https://ai.jasyscom-corp.workers.dev/app) and start building with JasysAI today!
