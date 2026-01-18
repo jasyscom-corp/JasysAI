@@ -42,7 +42,7 @@ export default {
   company: {
     name: 'Jasys AI',
     description: 'Leading AI platform providing access to powerful language models through simple, transparent APIs.',
-    founded: '2026',
+    founded: '19 January 2026',
     location: 'Global',
     contact_email: 'contact@jasysai.com',
     support_email: 'support@jasysai.com',
