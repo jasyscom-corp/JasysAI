@@ -88,6 +88,33 @@ export async function setupRoutes(request, env) {
     return apiRoutes(request, env);
   }
 
+  // Logout route
+  if (path === '/logout') {
+    const cookie = request.headers.get('cookie') || '';
+    const userToken = cookie.split('t=')[1]?.split(';')[0];
+    const adminToken = cookie.split('adm_t=')[1]?.split(';')[0];
+
+    // Delete session from KV if it exists
+    if (userToken) {
+      await DB.del(env, `sess:${userToken}`);
+    }
+    if (adminToken) {
+      await DB.del(env, `sess:${adminToken}`);
+    }
+
+    // Clear cookies
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': '/',
+        'Set-Cookie': [
+          't=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0',
+          'adm_t=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'
+        ]
+      }
+    });
+  }
+
   // OpenAI-compatible API routes (no /api prefix)
   if (path === '/v1/chat/completions') {
     return apiRoutes(request, env);
