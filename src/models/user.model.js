@@ -12,6 +12,20 @@ export class User {
     this.role = data.role || 'user';
     this.last_login = data.last_login || null;
     this.is_active = data.is_active !== false;
+    // Team management
+    this.team = data.team || null; // Team ID if user is part of a team
+    this.team_role = data.team_role || null; // 'owner', 'admin', 'member'
+    // Billing information
+    this.billing = data.billing || {
+      payment_method: null,
+      invoices: [],
+      subscriptions: [],
+      address: null
+    };
+    // Subscription plan
+    this.subscription = data.subscription || null; // 'free', 'basic', 'pro', 'enterprise'
+    this.subscription_status = data.subscription_status || 'active';
+    this.subscription_end = data.subscription_end || null;
   }
 
   static create(userData) {
@@ -34,7 +48,13 @@ export class User {
       unlocked_models: this.unlocked_models,
       role: this.role,
       last_login: this.last_login,
-      is_active: this.is_active
+      is_active: this.is_active,
+      team: this.team,
+      team_role: this.team_role,
+      billing: this.billing,
+      subscription: this.subscription,
+      subscription_status: this.subscription_status,
+      subscription_end: this.subscription_end
     };
   }
 
