@@ -159,6 +159,237 @@ export async function apiRoutes(request, env) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+
+    // Get usage history
+    if (path === '/api/user/usage-history' && method === 'GET') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      const usageHistory = [];
+      if (user.usage_daily) {
+        Object.entries(user.usage_daily).forEach(([date, usage]) => {
+          usageHistory.push({
+            date,
+            usage,
+            model: 'openai/gpt-3.5-turbo' // Default model for simplicity
+          });
+        });
+      }
+      
+      // Sort by date descending
+      usageHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      return new Response(JSON.stringify(usageHistory), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get billing history
+    if (path === '/api/user/billing-history' && method === 'GET') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      return new Response(JSON.stringify(user.billing?.invoices || []), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get subscription details
+    if (path === '/api/user/subscription' && method === 'GET') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      const plan = CONFIG.subscription_plans.find(p => p.id === user.subscription);
+      return new Response(JSON.stringify({ plan }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Cancel subscription
+    if (path === '/api/user/subscription' && method === 'DELETE') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      user.subscription = 'free';
+      user.subscription_status = 'cancelled';
+      user.subscription_end = null;
+      await DB.set(env, `u:${sess.email}`, user);
+      
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get user activity
+    if (path === '/api/user/activity' && method === 'GET') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      // Mock activity data - in real app, this would be stored in database
+      const activity = [
+        {
+          time: new Date(Date.now() - 3600000).toISOString(),
+          action: 'API Key Created',
+          details: 'Created new API key for development'
+        },
+        {
+          time: new Date(Date.now() - 86400000).toISOString(),
+          action: 'Package Purchased',
+          details: 'Purchased GPT-4 access package'
+        },
+        {
+          time: new Date(Date.now() - 172800000).toISOString(),
+          action: 'Team Created',
+          details: 'Created "Development Team" with 3 members'
+        }
+      ];
+      
+      return new Response(JSON.stringify(activity), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get user teams
+    if (path === '/api/user/teams' && method === 'GET') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      // Mock teams data - in real app, this would fetch from database
+      const teams = [
+        {
+          id: 'team-1',
+          name: 'Development Team',
+          role: 'Owner',
+          members: 3
+        },
+        {
+          id: 'team-2',
+          name: 'Marketing Team',
+          role: 'Member',
+          members: 5
+        }
+      ];
+      
+      return new Response(JSON.stringify(teams), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get team invitations
+    if (path === '/api/user/team-invitations' && method === 'GET') {
+      const user = await DB.get(env, `u:${sess.email}`);
+      if (!user) {
+        return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
+      }
+      
+      // Mock invitations data - in real app, this would fetch from database
+      const invitations = [
+        {
+          id: 'invite-1',
+          team_name: 'Design Team',
+          invited_by: 'john@example.com',
+          date: new Date(Date.now() - 86400000).toISOString()
+        }
+      ];
+      
+      return new Response(JSON.stringify(invitations), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Accept team invitation
+    if (path.match(/\/api\/user\/team-invitations\/[^/]+\/accept/) && method === 'POST') {
+      const invitationId = path.split('/')[5];
+      // In real app, this would update the database
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Reject team invitation
+    if (path.match(/\/api\/user\/team-invitations\/[^/]+\/reject/) && method === 'POST') {
+      const invitationId = path.split('/')[5];
+      // In real app, this would update the database
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Team management endpoints
+    if (path.match(/\/api\/teams\/[^/]+\/invite/) && method === 'POST') {
+      const teamId = path.split('/')[3];
+      const { email, role } = await request.json();
+      // In real app, this would send an invitation
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.match(/\/api\/teams\/[^/]+\/invitations/) && method === 'GET') {
+      const teamId = path.split('/')[3];
+      // Mock pending invitations
+      const invitations = [
+        {
+          id: 'inv-1',
+          email: 'jane@example.com',
+          role: 'member',
+          date: new Date(Date.now() - 3600000).toISOString()
+        }
+      ];
+      return new Response(JSON.stringify(invitations), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.match(/\/api\/teams\/[^/]+\/invitations\/[^/]+/) && method === 'DELETE') {
+      const teamId = path.split('/')[3];
+      const invitationId = path.split('/')[5];
+      // In real app, this would cancel the invitation
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.match(/\/api\/teams\/[^/]+\/members/) && method === 'GET') {
+      const teamId = path.split('/')[3];
+      // Mock team members
+      const members = [
+        {
+          email: 'john@example.com',
+          role: 'owner',
+          joined_at: new Date(Date.now() - 30 * 86400000).toISOString()
+        },
+        {
+          email: 'jane@example.com',
+          role: 'admin',
+          joined_at: new Date(Date.now() - 15 * 86400000).toISOString()
+        }
+      ];
+      return new Response(JSON.stringify(members), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.match(/\/api\/teams\/[^/]+\/members\/[^/]+/) && method === 'DELETE') {
+      const teamId = path.split('/')[3];
+      const memberEmail = decodeURIComponent(path.split('/')[5]);
+      // In real app, this would remove the member
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
   }
 
   // Guest Chat API
