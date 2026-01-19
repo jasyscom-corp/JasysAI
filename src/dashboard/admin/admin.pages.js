@@ -38,12 +38,12 @@ export function AdminApp(data) {
 </head>
 <body>
     <div class="header">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>Admin Dashboard</h1>
-            <nav style="display: flex; gap: 1rem;">
-                <a href="/admin/dashboard" style="color: #1e293b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; background: #f1f5f9;">Dashboard</a>
-                <a href="/admin/users" style="color: #64748b; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Users</a>
-                <a href="/admin" style="color: #dc2626; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;">Logout</a>
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">Admin Dashboard</h1>
+            <nav class="flex gap-4">
+                <a href="/admin/dashboard" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">Dashboard</a>
+                <a href="/admin/users" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">Users</a>
+                <a href="/admin" class="text-red-400 hover:text-red-300 px-4 py-2 rounded-lg">Logout</a>
             </nav>
         </div>
     </div>
@@ -63,10 +63,10 @@ export function AdminApp(data) {
                 <div class="value">${data.totalUsage || 0}</div>
             </div>
             <div class="stat-card">
-                <h3>Quick Actions</h3>
-                <div style="margin-top: 0.5rem;">
-                    <a href="/admin/users" style="display: inline-block; background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; margin-right: 0.5rem;">Manage Users</a>
-                    <a href="/admin/content" style="display: inline-block; background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">Manage Content</a>
+                <h3 class="text-lg font-semibold text-slate-400 mb-2">Quick Actions</h3>
+                <div class="mt-4 space-y-2">
+                    <button onclick="location.href='/admin/users'" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Manage Users</button>
+                    <button onclick="location.href='/admin/content'" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Manage Content</button>
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@ export function AdminApp(data) {
                     <div class="log-time">${new Date(log.time).toLocaleString()}</div>
                     <div class="log-email">${log.email}</div>
                     <div class="log-action">${log.model || log.action || 'Usage'}</div>
-                    <div style="color: #3b82f6; font-size: 0.875rem;">${log.cost ? log.cost.toFixed(2) + ' IDR' : ''}</div>
+                    <div class="text-blue-400 text-sm">${log.cost ? log.cost.toFixed(2) + ' IDR' : ''}</div>
                 </div>
             `).join('') || '<div class="log-item">No recent activity</div>'}
         </div>
