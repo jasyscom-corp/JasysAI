@@ -3,6 +3,9 @@ import { AdminApp } from '../dashboard/admin/admin.pages.js';
 import { AdminController } from '../dashboard/admin/admin.controller.js';
 import { ContentController } from '../dashboard/admin/content.controller.js';
 import { ContentManagementPage } from '../dashboard/admin/content.pages.js';
+import { AIProvidersManagementPage } from '../dashboard/admin/providers.pages.js';
+import { SubscriptionPlansManagementPage } from '../dashboard/admin/plans.pages.js';
+import { CreditPackagesManagementPage } from '../dashboard/admin/packages.pages.js';
 
 export async function adminRoutes(request, env) {
   const url = new URL(request.url);
@@ -176,6 +179,105 @@ export async function adminRoutes(request, env) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+
+    // AI Providers API
+    if (path === '/api/admin/providers' && method === 'GET') {
+      const providers = await AdminController.getAIProviders(env);
+      return new Response(JSON.stringify(providers), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path === '/api/admin/providers' && method === 'POST') {
+      const providerData = await request.json();
+      const result = await AdminController.addAIProvider(env, providerData);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.startsWith('/api/admin/providers/') && method === 'PUT') {
+      const providerId = decodeURIComponent(path.split('/')[4]);
+      const updates = await request.json();
+      const result = await AdminController.updateAIProvider(env, providerId, updates);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.startsWith('/api/admin/providers/') && method === 'DELETE') {
+      const providerId = decodeURIComponent(path.split('/')[4]);
+      const result = await AdminController.deleteAIProvider(env, providerId);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Subscription Plans API
+    if (path === '/api/admin/plans' && method === 'GET') {
+      const plans = await AdminController.getSubscriptionPlans(env);
+      return new Response(JSON.stringify(plans), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path === '/api/admin/plans' && method === 'POST') {
+      const planData = await request.json();
+      const result = await AdminController.addSubscriptionPlan(env, planData);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.startsWith('/api/admin/plans/') && method === 'PUT') {
+      const planId = decodeURIComponent(path.split('/')[4]);
+      const updates = await request.json();
+      const result = await AdminController.updateSubscriptionPlan(env, planId, updates);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.startsWith('/api/admin/plans/') && method === 'DELETE') {
+      const planId = decodeURIComponent(path.split('/')[4]);
+      const result = await AdminController.deleteSubscriptionPlan(env, planId);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Credit Packages API
+    if (path === '/api/admin/packages' && method === 'GET') {
+      const packages = await AdminController.getCreditPackages(env);
+      return new Response(JSON.stringify(packages), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path === '/api/admin/packages' && method === 'POST') {
+      const packageData = await request.json();
+      const result = await AdminController.addCreditPackage(env, packageData);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.startsWith('/api/admin/packages/') && method === 'PUT') {
+      const packageId = decodeURIComponent(path.split('/')[4]);
+      const updates = await request.json();
+      const result = await AdminController.updateCreditPackage(env, packageId, updates);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path.startsWith('/api/admin/packages/') && method === 'DELETE') {
+      const packageId = decodeURIComponent(path.split('/')[4]);
+      const result = await AdminController.deleteCreditPackage(env, packageId);
+      return new Response(JSON.stringify({ ok: result }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
   }
 
   // User management page
@@ -205,6 +307,75 @@ export async function adminRoutes(request, env) {
     }
     
     return new Response(getUsersManagementPage(), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // AI Providers management page
+  if (path === '/admin/providers' && method === 'GET') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('adm_t=')[1]?.split(';')[0];
+    
+    if (!token) {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'admin') {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const data = {
+      providers: await AdminController.getAIProviders(env)
+    };
+    
+    return new Response(AIProvidersManagementPage(data), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Subscription Plans management page
+  if (path === '/admin/plans' && method === 'GET') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('adm_t=')[1]?.split(';')[0];
+    
+    if (!token) {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'admin') {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const data = {
+      plans: await AdminController.getSubscriptionPlans(env)
+    };
+    
+    return new Response(SubscriptionPlansManagementPage(data), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Credit Packages management page
+  if (path === '/admin/packages' && method === 'GET') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('adm_t=')[1]?.split(';')[0];
+    
+    if (!token) {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'admin') {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const data = {
+      packages: await AdminController.getCreditPackages(env)
+    };
+    
+    return new Response(CreditPackagesManagementPage(data), {
       headers: { 'Content-Type': 'text/html' }
     });
   }

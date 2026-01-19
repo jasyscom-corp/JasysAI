@@ -1,5 +1,6 @@
 import { DB } from '../../db/index.js';
 import { CONFIG } from '../../config/index.js';
+import { ConfigService } from '../../config/config.service.js';
 import { Team } from '../../models/team.model.js';
 
 export class UserController {
@@ -76,7 +77,8 @@ export class UserController {
     const user = await DB.get(env, `u:${email}`);
     if (!user) return { err: "User not found" };
     
-    const creditPackage = CONFIG.credit_packages.find(p => p.id === packageId);
+    const creditPackages = await ConfigService.getCreditPackages(env);
+    const creditPackage = creditPackages.find(p => p.id === packageId);
     if (!creditPackage) return { err: "Package not found" };
     
     // In real implementation, this would integrate with payment gateway
@@ -91,6 +93,16 @@ export class UserController {
       type: 'credit_purchase'
     });
     
+    // Add bonus models based on credit package
+    user.unlocked_models = user.unlocked_models || [];
+    if (creditPackage.bonus_models) {
+      creditPackage.bonus_models.forEach(model => {
+        if (!user.unlocked_models.includes(model)) {
+          user.unlocked_models.push(model);
+        }
+      });
+    }
+    
     await DB.set(env, `u:${email}`, user);
     return { ok: true, creditsAdded: creditPackage.credits };
   }
@@ -99,7 +111,8 @@ export class UserController {
     const user = await DB.get(env, `u:${email}`);
     if (!user) return { err: "User not found" };
     
-    const plan = CONFIG.subscription_plans.find(p => p.id === planId);
+    const plans = await ConfigService.getSubscriptionPlans(env);
+    const plan = plans.find(p => p.id === planId);
     if (!plan) return { err: "Plan not found" };
     
     // Calculate subscription end date (1 month from now)
@@ -123,6 +136,16 @@ export class UserController {
       status: 'paid',
       type: 'subscription'
     });
+    
+    // Unlock available models for this plan
+    user.unlocked_models = user.unlocked_models || [];
+    if (plan.available_models) {
+      plan.available_models.forEach(model => {
+        if (!user.unlocked_models.includes(model)) {
+          user.unlocked_models.push(model);
+        }
+      });
+    }
     
     await DB.set(env, `u:${email}`, user);
     return { ok: true, plan: planId, creditsAdded: plan.credits };

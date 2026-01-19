@@ -43,6 +43,9 @@ export function AdminApp(data) {
             <nav class="flex gap-4">
                 <a href="/admin/dashboard" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">Dashboard</a>
                 <a href="/admin/users" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">Users</a>
+                <a href="/admin/providers" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">AI Providers</a>
+                <a href="/admin/plans" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">Subscription Plans</a>
+                <a href="/admin/packages" class="text-slate-300 hover:text-white px-4 py-2 rounded-lg">Credit Packages</a>
                 <a href="/admin" class="text-red-400 hover:text-red-300 px-4 py-2 rounded-lg">Logout</a>
             </nav>
         </div>

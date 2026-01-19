@@ -125,4 +125,55 @@ export class AdminController {
       logs
     };
   }
+
+  // AI Providers Management
+  static async getAIProviders(env) {
+    return await ConfigService.getAIProviders(env);
+  }
+
+  static async addAIProvider(env, providerData) {
+    return await ConfigService.addAIProvider(env, providerData);
+  }
+
+  static async updateAIProvider(env, providerId, updates) {
+    return await ConfigService.updateAIProvider(env, providerId, updates);
+  }
+
+  static async deleteAIProvider(env, providerId) {
+    return await ConfigService.deleteAIProvider(env, providerId);
+  }
+
+  // Subscription Plans Management
+  static async getSubscriptionPlans(env) {
+    return await ConfigService.getSubscriptionPlans(env);
+  }
+
+  static async addSubscriptionPlan(env, planData) {
+    return await ConfigService.addSubscriptionPlan(env, planData);
+  }
+
+  static async updateSubscriptionPlan(env, planId, updates) {
+    return await ConfigService.updateSubscriptionPlan(env, planId, updates);
+  }
+
+  static async deleteSubscriptionPlan(env, planId) {
+    return await ConfigService.deleteSubscriptionPlan(env, planId);
+  }
+
+  // Credit Packages Management
+  static async getCreditPackages(env) {
+    return await ConfigService.getCreditPackages(env);
+  }
+
+  static async addCreditPackage(env, packageData) {
+    return await ConfigService.addCreditPackage(env, packageData);
+  }
+
+  static async updateCreditPackage(env, packageId, updates) {
+    return await ConfigService.updateCreditPackage(env, packageId, updates);
+  }
+
+  static async deleteCreditPackage(env, packageId) {
+    return await ConfigService.deleteCreditPackage(env, packageId);
+  }
 }

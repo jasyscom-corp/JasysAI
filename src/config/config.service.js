@@ -41,7 +41,60 @@ export class ConfigService {
         midtrans_client_key: '',
         midtrans_environment: 'sandbox', // 'sandbox' or 'production'
         guest_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct'],
-        user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+        user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'],
+        ai_providers: [
+          {
+            id: 'openrouter',
+            name: 'OpenRouter',
+            endpoint: 'https://openrouter.ai/api/v1',
+            api_key: '',
+            active: true
+          }
+        ],
+        subscription_plans: [
+          { 
+            id: 'free', 
+            name: 'Free Plan', 
+            price: 0, 
+            credits: 5000, 
+            users: 1, 
+            features: ['Basic models', '5,000 credits/month', 'Community support', 'Standard API rate limits'],
+            available_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct']
+          },
+          { 
+            id: 'basic', 
+            name: 'Basic Plan', 
+            price: 29000, 
+            credits: 20000, 
+            users: 1, 
+            features: ['All models', '20,000 credits/month', 'Email support', 'Priority API rate limits', 'Usage analytics'],
+            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+          },
+          { 
+            id: 'pro', 
+            name: 'Pro Plan', 
+            price: 79000, 
+            credits: 60000, 
+            users: 5, 
+            features: ['All models', '60,000 credits/month', 'Priority email support', 'Higher API rate limits', 'Team management', 'Advanced analytics', 'Custom branding'],
+            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+          },
+          { 
+            id: 'enterprise', 
+            name: 'Enterprise Plan', 
+            price: 199000, 
+            credits: 200000, 
+            users: 20, 
+            features: ['All models', '200,000 credits/month', '24/7 phone support', 'Unlimited API rate limits', 'Advanced team management', 'Custom models', 'SLA guarantee', 'Dedicated account manager'],
+            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+          }
+        ],
+        credit_packages: [
+          { id: '10k', name: '10,000 Credits', price: 15000, credits: 10000, bonus_models: ['openai/gpt-4'] },
+          { id: '50k', name: '50,000 Credits', price: 70000, credits: 50000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus'] },
+          { id: '100k', name: '100,000 Credits', price: 130000, credits: 100000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo'] },
+          { id: '500k', name: '500,000 Credits', price: 600000, credits: 500000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'] }
+        ]
       };
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -52,7 +105,60 @@ export class ConfigService {
         midtrans_client_key: '',
         midtrans_environment: 'sandbox',
         guest_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct'],
-        user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+        user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'],
+        ai_providers: [
+          {
+            id: 'openrouter',
+            name: 'OpenRouter',
+            endpoint: 'https://openrouter.ai/api/v1',
+            api_key: '',
+            active: true
+          }
+        ],
+        subscription_plans: [
+          { 
+            id: 'free', 
+            name: 'Free Plan', 
+            price: 0, 
+            credits: 5000, 
+            users: 1, 
+            features: ['Basic models', '5,000 credits/month', 'Community support', 'Standard API rate limits'],
+            available_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct']
+          },
+          { 
+            id: 'basic', 
+            name: 'Basic Plan', 
+            price: 29000, 
+            credits: 20000, 
+            users: 1, 
+            features: ['All models', '20,000 credits/month', 'Email support', 'Priority API rate limits', 'Usage analytics'],
+            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+          },
+          { 
+            id: 'pro', 
+            name: 'Pro Plan', 
+            price: 79000, 
+            credits: 60000, 
+            users: 5, 
+            features: ['All models', '60,000 credits/month', 'Priority email support', 'Higher API rate limits', 'Team management', 'Advanced analytics', 'Custom branding'],
+            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+          },
+          { 
+            id: 'enterprise', 
+            name: 'Enterprise Plan', 
+            price: 199000, 
+            credits: 200000, 
+            users: 20, 
+            features: ['All models', '200,000 credits/month', '24/7 phone support', 'Unlimited API rate limits', 'Advanced team management', 'Custom models', 'SLA guarantee', 'Dedicated account manager'],
+            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+          }
+        ],
+        credit_packages: [
+          { id: '10k', name: '10,000 Credits', price: 15000, credits: 10000, bonus_models: ['openai/gpt-4'] },
+          { id: '50k', name: '50,000 Credits', price: 70000, credits: 50000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus'] },
+          { id: '100k', name: '100,000 Credits', price: 130000, credits: 100000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo'] },
+          { id: '500k', name: '500,000 Credits', price: 600000, credits: 500000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'] }
+        ]
       };
     }
   }
@@ -96,6 +202,250 @@ export class ConfigService {
     } catch (error) {
       console.error('Error setting admin bypass:', error);
       return false;
+    }
+  }
+
+  // AI Providers Management
+  static async getAIProviders(env) {
+    const settings = await this.getAllSettings(env);
+    return settings.ai_providers || [];
+  }
+
+  static async addAIProvider(env, provider) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.ai_providers = settings.ai_providers || [];
+      
+      // Check if provider already exists
+      const existing = settings.ai_providers.find(p => p.id === provider.id);
+      if (existing) {
+        return false;
+      }
+      
+      settings.ai_providers.push({
+        id: provider.id,
+        name: provider.name,
+        endpoint: provider.endpoint,
+        api_key: provider.api_key,
+        active: provider.active !== false
+      });
+      
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error adding AI provider:', error);
+      return false;
+    }
+  }
+
+  static async updateAIProvider(env, providerId, updates) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      const providerIndex = settings.ai_providers.findIndex(p => p.id === providerId);
+      
+      if (providerIndex === -1) {
+        return false;
+      }
+      
+      settings.ai_providers[providerIndex] = {
+        ...settings.ai_providers[providerIndex],
+        ...updates
+      };
+      
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error updating AI provider:', error);
+      return false;
+    }
+  }
+
+  static async deleteAIProvider(env, providerId) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.ai_providers = settings.ai_providers.filter(p => p.id !== providerId);
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error deleting AI provider:', error);
+      return false;
+    }
+  }
+
+  // Subscription Plans Management
+  static async getSubscriptionPlans(env) {
+    const settings = await this.getAllSettings(env);
+    return settings.subscription_plans || [];
+  }
+
+  static async addSubscriptionPlan(env, plan) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.subscription_plans = settings.subscription_plans || [];
+      
+      // Check if plan already exists
+      const existing = settings.subscription_plans.find(p => p.id === plan.id);
+      if (existing) {
+        return false;
+      }
+      
+      settings.subscription_plans.push({
+        id: plan.id,
+        name: plan.name,
+        price: plan.price,
+        credits: plan.credits,
+        users: plan.users,
+        features: plan.features || [],
+        available_models: plan.available_models || []
+      });
+      
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error adding subscription plan:', error);
+      return false;
+    }
+  }
+
+  static async updateSubscriptionPlan(env, planId, updates) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      const planIndex = settings.subscription_plans.findIndex(p => p.id === planId);
+      
+      if (planIndex === -1) {
+        return false;
+      }
+      
+      settings.subscription_plans[planIndex] = {
+        ...settings.subscription_plans[planIndex],
+        ...updates
+      };
+      
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error updating subscription plan:', error);
+      return false;
+    }
+  }
+
+  static async deleteSubscriptionPlan(env, planId) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.subscription_plans = settings.subscription_plans.filter(p => p.id !== planId);
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error deleting subscription plan:', error);
+      return false;
+    }
+  }
+
+  // Credit Packages Management
+  static async getCreditPackages(env) {
+    const settings = await this.getAllSettings(env);
+    return settings.credit_packages || [];
+  }
+
+  static async addCreditPackage(env, pkg) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.credit_packages = settings.credit_packages || [];
+      
+      // Check if package already exists
+      const existing = settings.credit_packages.find(p => p.id === pkg.id);
+      if (existing) {
+        return false;
+      }
+      
+      settings.credit_packages.push({
+        id: pkg.id,
+        name: pkg.name,
+        price: pkg.price,
+        credits: pkg.credits,
+        bonus_models: pkg.bonus_models || []
+      });
+      
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error adding credit package:', error);
+      return false;
+    }
+  }
+
+  static async updateCreditPackage(env, packageId, updates) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      const packageIndex = settings.credit_packages.findIndex(p => p.id === packageId);
+      
+      if (packageIndex === -1) {
+        return false;
+      }
+      
+      settings.credit_packages[packageIndex] = {
+        ...settings.credit_packages[packageIndex],
+        ...updates
+      };
+      
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error updating credit package:', error);
+      return false;
+    }
+  }
+
+  static async deleteCreditPackage(env, packageId) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.credit_packages = settings.credit_packages.filter(p => p.id !== packageId);
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error deleting credit package:', error);
+      return false;
+    }
+  }
+
+  // Get available models for user based on credits and subscription
+  static async getAvailableModelsForUser(env, user) {
+    try {
+      const settings = await this.getAllSettings(env);
+      
+      // Start with basic free models
+      let availableModels = new Set(settings.guest_models);
+      
+      // Add user's unlocked models
+      if (user.unlocked_models) {
+        user.unlocked_models.forEach(model => availableModels.add(model));
+      }
+      
+      // Check if user has an active subscription
+      if (user.subscription && user.subscription !== 'free') {
+        const plan = settings.subscription_plans.find(p => p.id === user.subscription);
+        if (plan && plan.available_models) {
+          plan.available_models.forEach(model => availableModels.add(model));
+        }
+      }
+      
+      // Check if user has purchased credit packages with bonus models
+      // This would require tracking purchased packages, but for now, we'll assume all bonus models are available based on credits
+      // In a real implementation, you would track which packages the user has purchased
+      
+      return Array.from(availableModels);
+    } catch (error) {
+      console.error('Error getting available models for user:', error);
+      return [];
     }
   }
 }

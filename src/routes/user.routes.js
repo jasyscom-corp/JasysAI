@@ -1,8 +1,11 @@
 import { DB } from '../db/index.js';
 import { UserApp } from '../dashboard/users/user.pages.js';
 import { TeamsApp } from '../dashboard/teams/teams.pages.js';
+import { TeamCreateApp } from '../dashboard/teams/team-create.pages.js';
 import { TeamInviteApp } from '../dashboard/teams/team-invite.pages.js';
 import { BillingApp } from '../dashboard/billing/billing.pages.js';
+import { UpgradePlanApp } from '../dashboard/billing/upgrade.pages.js';
+import { PurchaseCreditsApp } from '../dashboard/billing/purchase.pages.js';
 import { UsageApp } from '../dashboard/usage/usage.pages.js';
 import { UserController } from '../dashboard/users/user.controller.js';
 
@@ -76,6 +79,25 @@ export async function userRoutes(request, env) {
     });
   }
 
+  // Create team page
+  if (path === '/app/dashboard/teams/create') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('t=')[1]?.split(';')[0];
+
+    if (!token) {
+      return Response.redirect(`${url.origin}/app`, 302);
+    }
+
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'user') {
+      return Response.redirect(`${url.origin}/app`, 302);
+    }
+
+    return new Response(TeamCreateApp(), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
   // Team invite page
   if (path.match(/\/app\/dashboard\/teams\/[^/]+\/invite/)) {
     const cookie = request.headers.get('cookie') || '';
@@ -97,6 +119,44 @@ export async function userRoutes(request, env) {
     }
 
     return new Response(TeamInviteApp(team), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Upgrade plan page
+  if (path === '/app/dashboard/billing/upgrade') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('t=')[1]?.split(';')[0];
+
+    if (!token) {
+      return Response.redirect(`${url.origin}/app`, 302);
+    }
+
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'user') {
+      return Response.redirect(`${url.origin}/app`, 302);
+    }
+
+    return new Response(UpgradePlanApp(), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Purchase credits page
+  if (path === '/app/dashboard/billing/purchase') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('t=')[1]?.split(';')[0];
+
+    if (!token) {
+      return Response.redirect(`${url.origin}/app`, 302);
+    }
+
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'user') {
+      return Response.redirect(`${url.origin}/app`, 302);
+    }
+
+    return new Response(PurchaseCreditsApp(), {
       headers: { 'Content-Type': 'text/html' }
     });
   }
