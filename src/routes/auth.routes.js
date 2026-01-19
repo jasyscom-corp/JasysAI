@@ -14,14 +14,6 @@ export async function authRoutes(request, env) {
     });
   }
 
-  // Register page
-  if (path === '/auth/register') {
-    return new Response(RegisterPage(), {
-      headers: { 'Content-Type': 'text/html' }
-    });
-  }
-
-
   // Handle login POST
   if (path === '/auth/login' && method === 'POST') {
     const { email, pass } = await request.json();
@@ -70,6 +62,13 @@ export async function authRoutes(request, env) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+  }
+
+  // Register page
+  if (path === '/auth/register' && method === 'GET') {
+    return new Response(RegisterPage(), {
+      headers: { 'Content-Type': 'text/html' }
+    });
   }
 
 

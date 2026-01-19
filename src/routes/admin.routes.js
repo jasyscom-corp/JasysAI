@@ -98,6 +98,31 @@ export async function adminRoutes(request, env) {
       });
     }
 
+    // Get Midtrans settings
+    if (path === '/api/admin/midtrans' && method === 'GET') {
+      const settings = await AdminController.getDashboardData(env);
+      return new Response(JSON.stringify({
+        server_key: settings.settings.midtrans_server_key || '',
+        client_key: settings.settings.midtrans_client_key || '',
+        environment: settings.settings.midtrans_environment || 'sandbox'
+      }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Update Midtrans settings
+    if (path === '/api/admin/midtrans' && method === 'POST') {
+      const body = await request.json();
+      const settings = await AdminController.updateSettings(env, {
+        midtrans_server_key: body.server_key,
+        midtrans_client_key: body.client_key,
+        midtrans_environment: body.environment
+      });
+      return new Response(JSON.stringify(settings), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Get users
     if (path === '/api/admin/users' && method === 'GET') {
       const users = await AdminController.getUsers(env);

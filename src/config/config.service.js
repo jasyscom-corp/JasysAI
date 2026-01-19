@@ -37,6 +37,9 @@ export class ConfigService {
       return settings || {
         guest_limit: 5,
         openrouter_key: '',
+        midtrans_server_key: '',
+        midtrans_client_key: '',
+        midtrans_environment: 'sandbox', // 'sandbox' or 'production'
         guest_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct'],
         user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
       };
@@ -45,6 +48,9 @@ export class ConfigService {
       return {
         guest_limit: 5,
         openrouter_key: '',
+        midtrans_server_key: '',
+        midtrans_client_key: '',
+        midtrans_environment: 'sandbox',
         guest_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct'],
         user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
       };
