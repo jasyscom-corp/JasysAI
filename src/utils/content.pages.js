@@ -4,9 +4,24 @@ import { ContentModel } from '../models/index.js';
 import { getCurrentUrl } from './helpers.js';
 
 export async function ContentPage(request, env, pageKey) {
+  let settings = null;
+  try {
+    // Load settings first to ensure it's available for error handling
+    settings = await ConfigService.getAllSettings(env);
+  } catch (configError) {
+    console.error('Error loading settings:', configError);
+    settings = {
+      company: {
+        name: 'JasyAI',
+        support_email: 'support@jasyai.com',
+        technical_support: 'technical@jasyai.com'
+      },
+      site_url: 'https://ai.jasyscom.workers.dev'
+    };
+  }
+  
   try {
     const content = await ContentModel.get(env, pageKey);
-    const settings = await ConfigService.getAllSettings(env);
     
     const pageConfig = {
       about: {
@@ -136,7 +151,7 @@ export async function ContentPage(request, env, pageKey) {
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div>
           <div class="flex items-center gap-3 font-bold text-xl text-white mb-4">
-            ${LOGO_SVG} ${CONFIG.site_name}
+            ${LOGO_SVG} ${settings.company.name}
           </div>
           <p class="text-slate-400 text-sm">
             Your gateway to powerful AI models with simple, transparent pricing.
@@ -431,7 +446,7 @@ function getErrorPage(pageKey, errorMessage, currentUrl, settings) {
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div>
           <div class="flex items-center gap-3 font-bold text-xl text-white mb-4">
-            ${LOGO_SVG} ${CONFIG.site_name}
+            ${LOGO_SVG} ${settings.company.name}
           </div>
           <p class="text-slate-400 text-sm">
             Your gateway to powerful AI models with simple, transparent pricing.
@@ -499,32 +514,32 @@ function getSEOMeta(pageKey, content, config, currentUrl, settings) {
     about: {
       title: `About ${settings.company.name} - AI Platform for Developers`,
       description: `Learn more about ${settings.company.name}, a leading AI platform providing access to powerful language models through simple, transparent APIs. Our mission is to democratize AI technology.`,
-      keywords: 'AI platform, artificial intelligence, language models, API, developers, machine learning, ${settings.company.name.toLowerCase()}'
+      keywords: `AI platform, artificial intelligence, language models, API, developers, machine learning, ${settings.company.name.toLowerCase()}`
     },
     blog: {
       title: `${settings.company.name} Blog - Latest AI Updates and News`,
       description: `Stay updated with the latest news, updates, and insights about ${settings.company.name} and the world of artificial intelligence and machine learning.`,
-      keywords: 'AI blog, artificial intelligence news, machine learning updates, ${settings.company.name.toLowerCase()}, tech blog'
+      keywords: `AI blog, artificial intelligence news, machine learning updates, ${settings.company.name.toLowerCase()}, tech blog`
     },
     contact: {
       title: `Contact ${settings.company.name} - Support and Inquiries`,
       description: `Get in touch with the ${settings.company.name} team for support, questions, or inquiries. We're here to help you succeed with our AI platform.`,
-      keywords: 'contact support, AI help, customer service, ${settings.company.name.toLowerCase()}, technical support'
+      keywords: `contact support, AI help, customer service, ${settings.company.name.toLowerCase()}, technical support`
     },
     privacy_policy: {
       title: `Privacy Policy - ${settings.company.name}`,
       description: `Read ${settings.company.name}'s comprehensive privacy policy to understand how we collect, use, and protect your data and privacy.`,
-      keywords: 'privacy policy, data protection, GDPR, user privacy, ${settings.company.name.toLowerCase()}'
+      keywords: `privacy policy, data protection, GDPR, user privacy, ${settings.company.name.toLowerCase()}`
     },
     terms_of_service: {
       title: `Terms of Service - ${settings.company.name}`,
       description: `Review ${settings.company.name}'s terms of service and conditions for using our AI platform and API services.`,
-      keywords: 'terms of service, legal terms, service agreement, ${settings.company.name.toLowerCase()}, user agreement'
+      keywords: `terms of service, legal terms, service agreement, ${settings.company.name.toLowerCase()}, user agreement`
     },
     security: {
       title: `Security - ${settings.company.name}`,
       description: `Learn about ${settings.company.name}'s comprehensive security measures, data protection, and best practices for keeping your AI applications secure.`,
-      keywords: 'security, data protection, cybersecurity, AI security, ${settings.company.name.toLowerCase()}'
+      keywords: `security, data protection, cybersecurity, AI security, ${settings.company.name.toLowerCase()}`
     }
   };
   
@@ -538,21 +553,21 @@ function getSEOMeta(pageKey, content, config, currentUrl, settings) {
   const structuredData = JSON.stringify({
     "@context": "https://schema.org",
     "@type": pageKey === 'about' ? "Organization" : "WebPage",
-    "name": CONFIG.site_name,
-    "url": baseUrl + (pageUrls[pageKey] || ''),
+    "name": settings.company.name,
+    "url": currentUrl + (pageUrls[pageKey] || ''),
     "description": seo.description,
-    "logo": `${baseUrl}/assets/logo.png`,
+    "logo": `${currentUrl}/assets/logo.png`,
     "sameAs": [
       // Add social media URLs if available
     ],
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer service",
-      "email": `support@${CONFIG.site_name.toLowerCase()}.com`
+      "email": settings.company.support_email
     },
     "potentialAction": {
       "@type": "SearchAction",
-      "target": `${baseUrl}/search?q={search_term_string}`,
+      "target": `${currentUrl}/search?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   });
