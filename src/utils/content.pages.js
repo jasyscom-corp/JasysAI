@@ -1,4 +1,4 @@
-import { CONFIG } from '../config/index.js';
+import { ConfigService } from '../config/config.service.js';
 import { LOGO_SVG } from './assets.js';
 import { ContentModel } from '../models/index.js';
 import { getCurrentUrl } from './helpers.js';
@@ -6,6 +6,7 @@ import { getCurrentUrl } from './helpers.js';
 export async function ContentPage(request, env, pageKey) {
   try {
     const content = await ContentModel.get(env, pageKey);
+    const settings = await ConfigService.getAllSettings(env);
     
     const pageConfig = {
       about: {
@@ -37,26 +38,26 @@ export async function ContentPage(request, env, pageKey) {
     const config = pageConfig[pageKey] || { title: 'Content', description: '' };
 
   const currentUrl = getCurrentUrl(request);
-  const seoMeta = getSEOMeta(pageKey, content, config, currentUrl);
+  const seoMeta = getSEOMeta(pageKey, content, config, currentUrl, settings);
   
   return `
 <!DOCTYPE html><html lang="en" class="dark"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${seoMeta.title} - ${CONFIG.site_name}</title>
+  <title>${seoMeta.title} - ${settings.company.name}</title>
   <meta name="description" content="${seoMeta.description}">
   <meta name="keywords" content="${seoMeta.keywords}">
-  <meta name="author" content="${CONFIG.site_name}">
-  <meta property="og:title" content="${seoMeta.title} - ${CONFIG.site_name}">
+  <meta name="author" content="${settings.company.name}">
+  <meta property="og:title" content="${seoMeta.title} - ${settings.company.name}">
   <meta property="og:description" content="${seoMeta.description}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${currentUrl}${pageKey === 'about' ? '' : '/' + pageKey.replace('_', '-')}">
-  <meta property="og:site_name" content="${CONFIG.site_name}">
+  <meta property="og:site_name" content="${settings.company.name}">
   <meta property="og:image" content="${currentUrl}/assets/logo.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${seoMeta.title} - ${CONFIG.site_name}">
+  <meta name="twitter:title" content="${seoMeta.title} - ${settings.company.name}">
   <meta name="twitter:description" content="${seoMeta.description}">
-  <meta name="twitter:image" content="${CONFIG.site_url}/assets/logo.png">
+  <meta name="twitter:image" content="${settings.site_url}/assets/logo.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
@@ -70,7 +71,7 @@ export async function ContentPage(request, env, pageKey) {
   <nav class="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3 font-bold text-2xl">
-        ${LOGO_SVG} ${CONFIG.site_name}
+        ${LOGO_SVG} ${settings.company.name}
       </div>
       <div class="hidden md:flex items-center gap-6">
         <a href="/" class="text-slate-300 hover:text-white transition">Home</a>
@@ -113,7 +114,7 @@ export async function ContentPage(request, env, pageKey) {
           </div>
         ` : `
           <div class="text-slate-300">
-            ${getDefaultContent(pageKey)}
+            ${getDefaultContent(pageKey, settings)}
           </div>
         `}
       </div>
@@ -171,7 +172,7 @@ export async function ContentPage(request, env, pageKey) {
       </div>
       
       <div class="border-t border-slate-800/50 pt-8 text-center text-slate-400 text-sm">
-        <p>&copy; 2026 ${CONFIG.site_name}. All rights reserved.</p>
+        <p>&copy; 2026 ${settings.company.name}. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -191,15 +192,15 @@ export async function ContentPage(request, env, pageKey) {
     console.error('Error rendering content page:', error);
     // Return a proper HTML error page instead of letting it bubble up as JSON
     const currentUrl = getCurrentUrl(request);
-    return getErrorPage(pageKey, error.message, currentUrl);
+    return getErrorPage(pageKey, error.message, currentUrl, settings);
   }
 }
 
-function getDefaultContent(pageKey) {
+function getDefaultContent(pageKey, settings) {
   const defaultContent = {
     about: `
-      <h2 class="text-2xl font-bold mb-4">About ${CONFIG.site_name}</h2>
-      <p class="mb-4">${CONFIG.site_name} is a leading AI platform that provides access to powerful language models through a simple, transparent API. Our mission is to make AI accessible to everyone while maintaining the highest standards of privacy and security.</p>
+      <h2 class="text-2xl font-bold mb-4">About ${settings.company.name}</h2>
+      <p class="mb-4">${settings.company.name} is a leading AI platform that provides access to powerful language models through a simple, transparent API. Our mission is to make AI accessible to everyone while maintaining the highest standards of privacy and security.</p>
       <h3 class="text-xl font-bold mb-3">Our Vision</h3>
       <p class="mb-4">We believe in democratizing AI technology, allowing developers, businesses, and individuals to harness the power of advanced language models without the complexity and high costs typically associated with AI infrastructure.</p>
       <h3 class="text-xl font-bold mb-3">Why Choose Us?</h3>
@@ -213,12 +214,12 @@ function getDefaultContent(pageKey) {
     `,
     blog: `
       <h2 class="text-2xl font-bold mb-4">Latest Updates</h2>
-      <p class="mb-4">Welcome to the ${CONFIG.site_name} blog! Here you'll find the latest news, updates, and insights about our platform and the world of AI.</p>
+      <p class="mb-4">Welcome to the ${settings.company.name} blog! Here you'll find the latest news, updates, and insights about our platform and the world of AI.</p>
       <div class="space-y-6">
         <article class="border-l-4 border-brand pl-4">
           <h3 class="text-xl font-bold mb-2">Platform Launch</h3>
           <p class="text-slate-400 mb-2">Published on ${new Date().toLocaleDateString()}</p>
-          <p>We're excited to announce the official launch of ${CONFIG.site_name}! Our platform is now live and ready to help you integrate powerful AI capabilities into your applications.</p>
+          <p>We're excited to announce the official launch of ${settings.company.name}! Our platform is now live and ready to help you integrate powerful AI capabilities into your applications.</p>
         </article>
         <article class="border-l-4 border-brand pl-4">
           <h3 class="text-xl font-bold mb-2">New AI Models Available</h3>
@@ -234,7 +235,7 @@ function getDefaultContent(pageKey) {
         <div>
           <h3 class="text-xl font-bold mb-4">Contact Information</h3>
           <div class="space-y-3">
-            <p><strong>Email:</strong> support@${CONFIG.site_name.toLowerCase()}.com</p>
+            <p><strong>Email:</strong> ${settings.company.support_email}</p>
             <p><strong>Response Time:</strong> Within 24 hours</p>
             <p><strong>Support Hours:</strong> Monday - Friday, 9 AM - 6 PM UTC</p>
           </div>
@@ -248,7 +249,7 @@ function getDefaultContent(pageKey) {
     privacy_policy: `
       <h2 class="text-2xl font-bold mb-4">Privacy Policy</h2>
       <p class="mb-4"><strong>Last Updated:</strong> ${new Date().toLocaleDateString()}</p>
-      <p class="mb-4">At ${CONFIG.site_name}, we take your privacy seriously. This policy explains how we collect, use, and protect your information.</p>
+      <p class="mb-4">At ${settings.company.name}, we take your privacy seriously. This policy explains how we collect, use, and protect your information.</p>
       
       <h3 class="text-xl font-bold mb-3">Information We Collect</h3>
       <p class="mb-4">We collect information necessary to provide our services, including:</p>
@@ -276,10 +277,10 @@ function getDefaultContent(pageKey) {
     terms_of_service: `
       <h2 class="text-2xl font-bold mb-4">Terms of Service</h2>
       <p class="mb-4"><strong>Last Updated:</strong> ${new Date().toLocaleDateString()}</p>
-      <p class="mb-4">These terms govern your use of ${CONFIG.site_name}'s services and platform.</p>
+      <p class="mb-4">These terms govern your use of ${settings.company.name}'s services and platform.</p>
       
       <h3 class="text-xl font-bold mb-3">Service Agreement</h3>
-      <p class="mb-4">By using ${CONFIG.site_name}, you agree to these terms and our privacy policy. If you disagree, please do not use our service.</p>
+      <p class="mb-4">By using ${settings.company.name}, you agree to these terms and our privacy policy. If you disagree, please do not use our service.</p>
       
       <h3 class="text-xl font-bold mb-3">Acceptable Use</h3>
       <p class="mb-4">You agree to use our service responsibly and in compliance with all applicable laws. Prohibited uses include:</p>
@@ -304,7 +305,7 @@ function getDefaultContent(pageKey) {
     `,
     security: `
       <h2 class="text-2xl font-bold mb-4">Security</h2>
-      <p class="mb-4">Security is a top priority at ${CONFIG.site_name}. We implement comprehensive measures to protect your data and ensure service reliability.</p>
+      <p class="mb-4">Security is a top priority at ${settings.company.name}. We implement comprehensive measures to protect your data and ensure service reliability.</p>
       
       <h3 class="text-xl font-bold mb-3">Our Security Measures</h3>
       <ul class="list-disc list-inside space-y-2 mb-6">
@@ -323,7 +324,7 @@ function getDefaultContent(pageKey) {
       </ul>
       
       <h3 class="text-xl font-bold mb-3">Reporting Security Issues</h3>
-      <p class="mb-4">If you discover a security vulnerability, please report it immediately to security@${CONFIG.site_name.toLowerCase()}.com. We'll investigate and address all reports promptly.</p>
+      <p class="mb-4">If you discover a security vulnerability, please report it immediately to ${settings.company.technical_support}. We'll investigate and address all reports promptly.</p>
       
       <h3 class="text-xl font-bold mb-3">Data Protection</h3>
       <p class="mb-4">We never store your API requests or responses longer than necessary for service operation. All personal data is handled in accordance with our privacy policy and applicable regulations.</p>
@@ -333,7 +334,7 @@ function getDefaultContent(pageKey) {
   return defaultContent[pageKey] || '<p>Content is being updated. Please check back soon.</p>';
 }
 
-function getErrorPage(pageKey, errorMessage, currentUrl) {
+function getErrorPage(pageKey, errorMessage, currentUrl, settings) {
   const pageTitles = {
     about: 'About Us',
     blog: 'Blog',
@@ -349,7 +350,7 @@ function getErrorPage(pageKey, errorMessage, currentUrl) {
 <!DOCTYPE html><html lang="en" class="dark"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="${title} page temporarily unavailable on ${CONFIG.site_name}. We're working to resolve the issue.">
+  <meta name="description" content="${title} page temporarily unavailable on ${settings.company.name}. We're working to resolve the issue.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
@@ -360,7 +361,7 @@ function getErrorPage(pageKey, errorMessage, currentUrl) {
   <nav class="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3 font-bold text-2xl">
-        ${LOGO_SVG} ${CONFIG.site_name}
+        ${LOGO_SVG} ${settings.company.name}
       </div>
       <div class="hidden md:flex items-center gap-6">
         <a href="/" class="text-slate-300 hover:text-white transition">Home</a>
@@ -466,7 +467,7 @@ function getErrorPage(pageKey, errorMessage, currentUrl) {
       </div>
       
       <div class="border-t border-slate-800/50 pt-8 text-center text-slate-400 text-sm">
-        <p>&copy; 2026 ${CONFIG.site_name}. All rights reserved.</p>
+        <p>&copy; 2026 ${settings.company.name}. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -484,7 +485,7 @@ function getErrorPage(pageKey, errorMessage, currentUrl) {
 </body></html>`;
 }
 
-function getSEOMeta(pageKey, content, config, currentUrl) {
+function getSEOMeta(pageKey, content, config, currentUrl, settings) {
   const pageUrls = {
     about: '',
     blog: '/blog',
@@ -496,41 +497,41 @@ function getSEOMeta(pageKey, content, config, currentUrl) {
   
   const seoData = {
     about: {
-      title: `About ${CONFIG.site_name} - AI Platform for Developers`,
-      description: `Learn more about ${CONFIG.site_name}, a leading AI platform providing access to powerful language models through simple, transparent APIs. Our mission is to democratize AI technology.`,
-      keywords: 'AI platform, artificial intelligence, language models, API, developers, machine learning, ${CONFIG.site_name.toLowerCase()}'
+      title: `About ${settings.company.name} - AI Platform for Developers`,
+      description: `Learn more about ${settings.company.name}, a leading AI platform providing access to powerful language models through simple, transparent APIs. Our mission is to democratize AI technology.`,
+      keywords: 'AI platform, artificial intelligence, language models, API, developers, machine learning, ${settings.company.name.toLowerCase()}'
     },
     blog: {
-      title: `${CONFIG.site_name} Blog - Latest AI Updates and News`,
-      description: `Stay updated with the latest news, updates, and insights about ${CONFIG.site_name} and the world of artificial intelligence and machine learning.`,
-      keywords: 'AI blog, artificial intelligence news, machine learning updates, ${CONFIG.site_name.toLowerCase()}, tech blog'
+      title: `${settings.company.name} Blog - Latest AI Updates and News`,
+      description: `Stay updated with the latest news, updates, and insights about ${settings.company.name} and the world of artificial intelligence and machine learning.`,
+      keywords: 'AI blog, artificial intelligence news, machine learning updates, ${settings.company.name.toLowerCase()}, tech blog'
     },
     contact: {
-      title: `Contact ${CONFIG.site_name} - Support and Inquiries`,
-      description: `Get in touch with the ${CONFIG.site_name} team for support, questions, or inquiries. We're here to help you succeed with our AI platform.`,
-      keywords: 'contact support, AI help, customer service, ${CONFIG.site_name.toLowerCase()}, technical support'
+      title: `Contact ${settings.company.name} - Support and Inquiries`,
+      description: `Get in touch with the ${settings.company.name} team for support, questions, or inquiries. We're here to help you succeed with our AI platform.`,
+      keywords: 'contact support, AI help, customer service, ${settings.company.name.toLowerCase()}, technical support'
     },
     privacy_policy: {
-      title: `Privacy Policy - ${CONFIG.site_name}`,
-      description: `Read ${CONFIG.site_name}'s comprehensive privacy policy to understand how we collect, use, and protect your data and privacy.`,
-      keywords: 'privacy policy, data protection, GDPR, user privacy, ${CONFIG.site_name.toLowerCase()}'
+      title: `Privacy Policy - ${settings.company.name}`,
+      description: `Read ${settings.company.name}'s comprehensive privacy policy to understand how we collect, use, and protect your data and privacy.`,
+      keywords: 'privacy policy, data protection, GDPR, user privacy, ${settings.company.name.toLowerCase()}'
     },
     terms_of_service: {
-      title: `Terms of Service - ${CONFIG.site_name}`,
-      description: `Review ${CONFIG.site_name}'s terms of service and conditions for using our AI platform and API services.`,
-      keywords: 'terms of service, legal terms, service agreement, ${CONFIG.site_name.toLowerCase()}, user agreement'
+      title: `Terms of Service - ${settings.company.name}`,
+      description: `Review ${settings.company.name}'s terms of service and conditions for using our AI platform and API services.`,
+      keywords: 'terms of service, legal terms, service agreement, ${settings.company.name.toLowerCase()}, user agreement'
     },
     security: {
-      title: `Security - ${CONFIG.site_name}`,
-      description: `Learn about ${CONFIG.site_name}'s comprehensive security measures, data protection, and best practices for keeping your AI applications secure.`,
-      keywords: 'security, data protection, cybersecurity, AI security, ${CONFIG.site_name.toLowerCase()}'
+      title: `Security - ${settings.company.name}`,
+      description: `Learn about ${settings.company.name}'s comprehensive security measures, data protection, and best practices for keeping your AI applications secure.`,
+      keywords: 'security, data protection, cybersecurity, AI security, ${settings.company.name.toLowerCase()}'
     }
   };
   
   const seo = seoData[pageKey] || {
-    title: `${config.title} - ${CONFIG.site_name}`,
+    title: `${config.title} - ${settings.company.name}`,
     description: config.description,
-    keywords: `${CONFIG.site_name.toLowerCase()}, AI platform, artificial intelligence`
+    keywords: `${settings.company.name.toLowerCase()}, AI platform, artificial intelligence`
   };
   
   // Structured data for SEO

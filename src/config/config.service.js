@@ -35,7 +35,12 @@ export class ConfigService {
       const { DB } = await import('../db/database.js');
       const settings = await DB.get(env, 'sys_settings');
       return settings || {
-        guest_limit: 5,
+        admin_user: 'jasyscorp',
+        admin_pass: 'Jasyscorp-admin123000',
+        default_credits: 5000,
+        profit_margin: 1.5,
+        idr_rate: 16909,
+        guest_limit: 10,
         openrouter_key: '',
         midtrans_server_key: '',
         midtrans_client_key: '',
@@ -94,12 +99,44 @@ export class ConfigService {
           { id: '50k', name: '50,000 Credits', price: 70000, credits: 50000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus'] },
           { id: '100k', name: '100,000 Credits', price: 130000, credits: 100000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo'] },
           { id: '500k', name: '500,000 Credits', price: 600000, credits: 500000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'] }
-        ]
+        ],
+        seo: {
+          default_title: 'Jasys AI - Advanced AI Platform for Developers',
+          default_description: 'Access powerful AI models through simple, transparent APIs. Jasys AI provides cutting-edge language models with developer-friendly integration and scalable infrastructure.',
+          default_keywords: 'Jasys AI, AI platform, artificial intelligence, language models, API, developers, machine learning, GPT, Claude, Gemini',
+          author: 'Jasys AI Team',
+          twitter_handle: '@jasysai',
+          og_image: '/assets/logo.png',
+          theme_color: '#7c3aed',
+          favicon_sizes: [16, 32, 180],
+          apple_touch_icon: true,
+          webmanifest: true
+        },
+        social: {
+          twitter: 'https://twitter.com/jasysai',
+          github: 'https://github.com/jasysai',
+          linkedin: 'https://linkedin.com/company/jasysai',
+          website: 'https://jasysai.com'
+        },
+        company: {
+          name: 'Jasys AI',
+          description: 'Leading AI platform providing access to powerful language models through simple, transparent APIs.',
+          founded: '19 January 2026',
+          location: 'Global',
+          contact_email: 'contact@jasysai.com',
+          support_email: 'support@jasysai.com',
+          technical_support: 'technical@jasysai.com'
+        }
       };
     } catch (error) {
       console.error('Error fetching settings:', error);
       return {
-        guest_limit: 5,
+        admin_user: 'jasyscorp',
+        admin_pass: 'Jasyscorp-admin123000',
+        default_credits: 5000,
+        profit_margin: 1.5,
+        idr_rate: 16909,
+        guest_limit: 10,
         openrouter_key: '',
         midtrans_server_key: '',
         midtrans_client_key: '',
@@ -158,7 +195,34 @@ export class ConfigService {
           { id: '50k', name: '50,000 Credits', price: 70000, credits: 50000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus'] },
           { id: '100k', name: '100,000 Credits', price: 130000, credits: 100000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo'] },
           { id: '500k', name: '500,000 Credits', price: 600000, credits: 500000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'] }
-        ]
+        ],
+        seo: {
+          default_title: 'Jasys AI - Advanced AI Platform for Developers',
+          default_description: 'Access powerful AI models through simple, transparent APIs. Jasys AI provides cutting-edge language models with developer-friendly integration and scalable infrastructure.',
+          default_keywords: 'Jasys AI, AI platform, artificial intelligence, language models, API, developers, machine learning, GPT, Claude, Gemini',
+          author: 'Jasys AI Team',
+          twitter_handle: '@jasysai',
+          og_image: '/assets/logo.png',
+          theme_color: '#7c3aed',
+          favicon_sizes: [16, 32, 180],
+          apple_touch_icon: true,
+          webmanifest: true
+        },
+        social: {
+          twitter: 'https://twitter.com/jasysai',
+          github: 'https://github.com/jasysai',
+          linkedin: 'https://linkedin.com/company/jasysai',
+          website: 'https://jasysai.com'
+        },
+        company: {
+          name: 'Jasys AI',
+          description: 'Leading AI platform providing access to powerful language models through simple, transparent APIs.',
+          founded: '19 January 2026',
+          location: 'Global',
+          contact_email: 'contact@jasysai.com',
+          support_email: 'support@jasysai.com',
+          technical_support: 'technical@jasysai.com'
+        }
       };
     }
   }
@@ -173,6 +237,109 @@ export class ConfigService {
       return true;
     } catch (error) {
       console.error('Error updating settings:', error);
+      return false;
+    }
+  }
+
+  static async getAdminUser(env) {
+    try {
+      const settings = await this.getAllSettings(env);
+      return settings.admin_user || 'jasyscorp';
+    } catch (error) {
+      console.error('Error getting admin user:', error);
+      return 'jasyscorp';
+    }
+  }
+
+  static async getAdminPass(env) {
+    try {
+      const settings = await this.getAllSettings(env);
+      return settings.admin_pass || 'Jasyscorp-admin123000';
+    } catch (error) {
+      console.error('Error getting admin pass:', error);
+      return 'Jasyscorp-admin123000';
+    }
+  }
+
+  static async setAdminCredentials(env, username, password) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.admin_user = username;
+      settings.admin_pass = password;
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error setting admin credentials:', error);
+      return false;
+    }
+  }
+
+  static async getDefaultCredits(env) {
+    try {
+      const settings = await this.getAllSettings(env);
+      return settings.default_credits || 5000;
+    } catch (error) {
+      console.error('Error getting default credits:', error);
+      return 5000;
+    }
+  }
+
+  static async setDefaultCredits(env, credits) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.default_credits = credits;
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error setting default credits:', error);
+      return false;
+    }
+  }
+
+  static async getProfitMargin(env) {
+    try {
+      const settings = await this.getAllSettings(env);
+      return settings.profit_margin || 1.5;
+    } catch (error) {
+      console.error('Error getting profit margin:', error);
+      return 1.5;
+    }
+  }
+
+  static async setProfitMargin(env, margin) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.profit_margin = margin;
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error setting profit margin:', error);
+      return false;
+    }
+  }
+
+  static async getIDRRate(env) {
+    try {
+      const settings = await this.getAllSettings(env);
+      return settings.idr_rate || 16909;
+    } catch (error) {
+      console.error('Error getting IDR rate:', error);
+      return 16909;
+    }
+  }
+
+  static async setIDRRate(env, rate) {
+    try {
+      const { DB } = await import('../db/database.js');
+      const settings = await this.getAllSettings(env);
+      settings.idr_rate = rate;
+      await DB.set(env, 'sys_settings', settings);
+      return true;
+    } catch (error) {
+      console.error('Error setting IDR rate:', error);
       return false;
     }
   }

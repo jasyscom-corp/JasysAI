@@ -1,5 +1,4 @@
 import { DB } from '../../db/index.js';
-import { CONFIG } from '../../config/index.js';
 import { ConfigService } from '../../config/config.service.js';
 import { Team } from '../../models/team.model.js';
 
@@ -9,7 +8,8 @@ export class UserController {
     const user = await DB.get(env, `u:${email}`);
     if (!user) return { err: "User not found" };
     
-    const pkg = CONFIG.packages.find(p => p.id === packageId);
+    const settings = await ConfigService.getAllSettings(env);
+    const pkg = settings.packages.find(p => p.id === packageId);
     if (!pkg) return { err: "Package not found" };
     
     if (user.credits < pkg.price) {
@@ -341,8 +341,9 @@ export class UserController {
     const user = await DB.get(env, `u:${email}`);
     if (!user) return [];
     
+    const settings = await ConfigService.getAllSettings(env);
     const availableModels = new Set([
-      ...CONFIG.default_models.user,
+      ...settings.user_models,
       ...(user.unlocked_models || [])
     ]);
     

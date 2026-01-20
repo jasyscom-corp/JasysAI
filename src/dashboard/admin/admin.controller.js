@@ -176,4 +176,62 @@ export class AdminController {
   static async deleteCreditPackage(env, packageId) {
     return await ConfigService.deleteCreditPackage(env, packageId);
   }
+
+  // System Settings Management
+  static async getAdminCredentials(env) {
+    return {
+      username: await ConfigService.getAdminUser(env),
+      password: await ConfigService.getAdminPass(env)
+    };
+  }
+
+  static async updateAdminCredentials(env, username, password) {
+    return await ConfigService.setAdminCredentials(env, username, password);
+  }
+
+  static async getDefaultCredits(env) {
+    return await ConfigService.getDefaultCredits(env);
+  }
+
+  static async updateDefaultCredits(env, credits) {
+    return await ConfigService.setDefaultCredits(env, credits);
+  }
+
+  static async getProfitMargin(env) {
+    return await ConfigService.getProfitMargin(env);
+  }
+
+  static async updateProfitMargin(env, margin) {
+    return await ConfigService.setProfitMargin(env, margin);
+  }
+
+  static async getIDRRate(env) {
+    return await ConfigService.getIDRRate(env);
+  }
+
+  static async updateIDRRate(env, rate) {
+    return await ConfigService.setIDRRate(env, rate);
+  }
+
+  static async getGuestLimit(env) {
+    return await ConfigService.getGuestLimit(env);
+  }
+
+  static async updateGuestLimit(env, limit) {
+    return await ConfigService.setGuestLimit(env, limit);
+  }
+
+  static async getSystemSettings(env) {
+    const settings = await ConfigService.getAllSettings(env);
+    return {
+      admin_user: settings.admin_user,
+      default_credits: settings.default_credits,
+      profit_margin: settings.profit_margin,
+      idr_rate: settings.idr_rate,
+      guest_limit: settings.guest_limit,
+      midtrans_server_key: settings.midtrans_server_key,
+      midtrans_client_key: settings.midtrans_client_key,
+      midtrans_environment: settings.midtrans_environment
+    };
+  }
 }

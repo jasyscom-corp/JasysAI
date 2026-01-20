@@ -1,5 +1,5 @@
 import { DB } from '../db/index.js';
-import { CONFIG } from '../config/index.js';
+import { ConfigService } from '../config/config.service.js';
 import { jwtVerify, createRemoteJWKSet } from 'jose';
 
 export class AuthService {
@@ -14,7 +14,10 @@ export class AuthService {
   }
 
   static async authenticateAdmin(env, username, password) {
-    if (username === CONFIG.admin_user && password === CONFIG.admin_pass) {
+    const adminUser = await ConfigService.getAdminUser(env);
+    const adminPass = await ConfigService.getAdminPass(env);
+    
+    if (username === adminUser && password === adminPass) {
       const token = 'adm_' + crypto.randomUUID().replace(/-/g,'');
       await DB.set(env, `sess:${token}`, { role: 'admin' }, 86400 * 7);
       return { ok: true, token, role: 'admin' };
@@ -28,11 +31,13 @@ export class AuthService {
     const existing = await DB.get(env, `u:${email}`);
     if (existing) return { err: "Email already registered" };
 
+    const defaultCredits = await ConfigService.getDefaultCredits(env);
+    
     const user = {
       email,
       name,
       pass: password,
-      credits: CONFIG.default_credits,
+      credits: defaultCredits,
       api_keys: [],
       created: new Date().toISOString(),
       usage_daily: {},

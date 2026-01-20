@@ -1,4 +1,4 @@
-import { CONFIG } from '../config/index.js';
+import { ConfigService } from '../config/config.service.js';
 
 export const resJSON = (d, s=200) => new Response(JSON.stringify(d), {status:s, headers:{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}});
 
@@ -28,7 +28,9 @@ export async function handleBilling(env, email, modelId, usage) {
   
   if (model) {
     const costUSD = (usage.prompt_tokens * (model.pricing.prompt || 0)) + (usage.completion_tokens * (model.pricing.completion || 0));
-    const costIDR = costUSD * CONFIG.idr_rate * CONFIG.profit_margin;
+    const idrRate = await ConfigService.getIDRRate(env);
+    const profitMargin = await ConfigService.getProfitMargin(env);
+    const costIDR = costUSD * idrRate * profitMargin;
     
     const u = await DB.get(env, `u:${email}`);
     if (u) {

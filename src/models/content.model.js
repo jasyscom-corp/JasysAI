@@ -52,7 +52,7 @@ export class ContentModel {
 
   static async delete(env, key) {
     try {
-      await DB.delete(env, `content:${key}`);
+      await DB.del(env, `content:${key}`);
       return { ok: true };
     } catch (error) {
       console.error('Error deleting content:', error);

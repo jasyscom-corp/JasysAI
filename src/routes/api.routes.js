@@ -1,7 +1,7 @@
 import { DB } from '../db/index.js';
 import { handleBilling } from '../db/database.js';
 import { UserController } from '../dashboard/users/user.controller.js';
-import { CONFIG } from '../config/index.js';
+import { ConfigService } from '../config/config.service.js';
 
 export async function apiRoutes(request, env) {
   const url = new URL(request.url);
@@ -205,7 +205,8 @@ export async function apiRoutes(request, env) {
         return new Response(JSON.stringify({ err: 'User not found' }), { status: 404 });
       }
       
-      const plan = CONFIG.subscription_plans.find(p => p.id === user.subscription);
+      const settings = await ConfigService.getAllSettings(env);
+      const plan = settings.subscription_plans.find(p => p.id === user.subscription);
       return new Response(JSON.stringify({ plan }), {
         headers: { 'Content-Type': 'application/json' }
       });
@@ -400,7 +401,8 @@ export async function apiRoutes(request, env) {
     const guestKey = `guest:${new URL(request.url).hostname}:${request.headers.get('user-agent')}`;
     const guestData = await DB.get(env, guestKey) || { messageCount: 0, chats: [] };
     
-    if (guestData.messageCount >= CONFIG.guest_limit) {
+    const guestLimit = await ConfigService.getGuestLimit(env);
+    if (guestData.messageCount >= guestLimit) {
       return new Response(JSON.stringify({ 
         err: 'Guest message limit reached. Please register or sign in for unlimited chat.' 
       }), { status: 429 });
@@ -423,7 +425,7 @@ export async function apiRoutes(request, env) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: CONFIG.default_models.guest[0],
+          model: (await ConfigService.getAllSettings(env)).guest_models[0],
           messages: [{ role: 'user', content: message }]
         })
       });
@@ -487,8 +489,9 @@ export async function apiRoutes(request, env) {
     }
     
     // Combine default user models with unlocked models
+    const settings = await ConfigService.getAllSettings(env);
     const availableModels = new Set([
-      ...CONFIG.default_models.user,
+      ...settings.user_models,
       ...(user.unlocked_models || [])
     ]);
     
@@ -528,7 +531,8 @@ export async function apiRoutes(request, env) {
 
   // User Chat API
   if (path === '/api/chat' && method === 'POST') {
-    const { message, chatId, model = CONFIG.default_models.user[0] } = await request.json();
+    const settings = await ConfigService.getAllSettings(env);
+    const { message, chatId, model = settings.user_models[0] } = await request.json();
     const user = await DB.get(env, `u:${sess.email}`);
     
     if (!user) {

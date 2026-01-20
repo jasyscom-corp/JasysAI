@@ -6,6 +6,7 @@ import { ContentManagementPage } from '../dashboard/admin/content.pages.js';
 import { AIProvidersManagementPage } from '../dashboard/admin/providers.pages.js';
 import { SubscriptionPlansManagementPage } from '../dashboard/admin/plans.pages.js';
 import { CreditPackagesManagementPage } from '../dashboard/admin/packages.pages.js';
+import { SystemSettingsManagementPage } from '../dashboard/admin/settings.pages.js';
 
 export async function adminRoutes(request, env) {
   const url = new URL(request.url);
@@ -122,6 +123,32 @@ export async function adminRoutes(request, env) {
         midtrans_environment: body.environment
       });
       return new Response(JSON.stringify(settings), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get system settings
+    if (path === '/api/admin/settings/system' && method === 'GET') {
+      const settings = await AdminController.getSystemSettings(env);
+      return new Response(JSON.stringify(settings), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Update system settings
+    if (path === '/api/admin/settings/system' && method === 'POST') {
+      const body = await request.json();
+      const updates = {};
+      
+      if (body.admin_user) updates.admin_user = body.admin_user;
+      if (body.admin_pass) updates.admin_pass = body.admin_pass;
+      if (body.default_credits !== undefined) updates.default_credits = body.default_credits;
+      if (body.profit_margin !== undefined) updates.profit_margin = body.profit_margin;
+      if (body.idr_rate !== undefined) updates.idr_rate = body.idr_rate;
+      if (body.guest_limit !== undefined) updates.guest_limit = body.guest_limit;
+      
+      const result = await AdminController.updateSettings(env, updates);
+      return new Response(JSON.stringify(result), {
         headers: { 'Content-Type': 'application/json' }
       });
     }
@@ -378,6 +405,65 @@ export async function adminRoutes(request, env) {
     return new Response(CreditPackagesManagementPage(data), {
       headers: { 'Content-Type': 'text/html' }
     });
+  }
+
+  // System Settings management page
+  if (path === '/admin/settings' && method === 'GET') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('adm_t=')[1]?.split(';')[0];
+    
+    if (!token) {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'admin') {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const data = {
+      settings: await AdminController.getSystemSettings(env)
+    };
+    
+    return new Response(SystemSettingsManagementPage(data), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Content Management page
+  if (path === '/admin/content' && method === 'GET') {
+    const cookie = request.headers.get('cookie') || '';
+    const token = cookie.split('adm_t=')[1]?.split(';')[0];
+    
+    if (!token) {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    const sess = await DB.get(env, `sess:${token}`);
+    if (!sess || sess.role !== 'admin') {
+      return Response.redirect(`${url.origin}/admin`, 302);
+    }
+    
+    return new Response(ContentManagementPage(), {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+
+  // Content Management API
+  if (path === '/api/admin/content' && method === 'GET') {
+    return ContentController.getAllContent(request, env);
+  }
+
+  if (path === '/api/admin/content' && method === 'POST') {
+    return ContentController.updateContent(request, env);
+  }
+
+  if (path.startsWith('/api/admin/content') && method === 'GET') {
+    return ContentController.getContent(request, env);
+  }
+
+  if (path.startsWith('/api/admin/content') && method === 'DELETE') {
+    return ContentController.deleteContent(request, env);
   }
 
   return new Response('Not Found', { status: 404 });
