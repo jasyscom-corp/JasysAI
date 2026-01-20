@@ -8,6 +8,50 @@ export async function apiRoutes(request, env) {
   const path = url.pathname;
   const method = request.method;
 
+  // Contact Form API (no authentication required)
+  if (path === '/api/contact' && method === 'POST') {
+    try {
+      const formData = await request.json();
+      
+      // Validate form data
+      if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+        return new Response(JSON.stringify({
+          error: 'All fields are required'
+        }), { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      // Save to KV
+      const contactKey = `contact:${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const contactEntry = {
+        ...formData,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      };
+      
+      await DB.set(env, contactKey, contactEntry);
+      
+      return new Response(JSON.stringify({
+        ok: true,
+        message: 'Thank you for your message. We will get back to you soon.'
+      }), { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+    } catch (error) {
+      console.error('Contact form error:', error);
+      return new Response(JSON.stringify({
+        error: 'Failed to send message'
+      }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
   // Get authorization header
   const authHeader = request.headers.get('Authorization') || '';
   const token = authHeader.replace('Bearer ', '');
@@ -393,6 +437,55 @@ export async function apiRoutes(request, env) {
     }
   }
 
+  // Contact Form API (no authentication required)
+  if (path === '/api/contact' && method === 'POST') {
+    try {
+      const formData = await request.json();
+      
+      // Validate form data
+      if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+        return new Response(JSON.stringify({
+          error: 'All fields are required'
+        }), { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      // Save to KV
+      const contactKey = `contact:${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const contactEntry = {
+        ...formData,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      };
+      
+      await DB.set(env, contactKey, contactEntry);
+      
+      // In a real application, you might want to:
+      // 1. Send an email notification
+      // 2. Add to a queue for processing
+      // 3. Send a confirmation email to the user
+      
+      return new Response(JSON.stringify({
+        ok: true,
+        message: 'Thank you for your message. We will get back to you soon.'
+      }), { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+    } catch (error) {
+      console.error('Contact form error:', error);
+      return new Response(JSON.stringify({
+        error: 'Failed to send message'
+      }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+  
   // Guest Chat API
   if (path === '/api/chat/guest' && method === 'POST') {
     const { message, chatId } = await request.json();
@@ -529,6 +622,107 @@ export async function apiRoutes(request, env) {
     });
   }
 
+  // Admin API - Get contact messages
+  if (path === '/api/admin/contact-messages' && method === 'GET' && sess.role === 'admin') {
+    try {
+      const contactKeys = await DB.list(env, 'contact:');
+      const messages = [];
+      
+      for (const key of contactKeys.keys) {
+        const message = await DB.get(env, key.name);
+        messages.push({
+          id: key.name,
+          ...message
+        });
+      }
+      
+      // Sort by date descending
+      messages.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+      
+      return new Response(JSON.stringify(messages), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Error fetching contact messages:', error);
+      return new Response(JSON.stringify({
+        error: 'Failed to fetch contact messages'
+      }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+  
+  // Admin API - Update contact message status
+  if (path.match(/\/api\/admin\/contact-messages\/[^/]+\/status/) && method === 'PUT' && sess.role === 'admin') {
+    try {
+      const messageId = decodeURIComponent(path.split('/')[5]);
+      const { status } = await request.json();
+      
+      const message = await DB.get(env, messageId);
+      if (!message) {
+        return new Response(JSON.stringify({
+          error: 'Message not found'
+        }), { 
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      message.status = status;
+      await DB.set(env, messageId, message);
+      
+      return new Response(JSON.stringify({
+        ok: true
+      }), { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Error updating contact message status:', error);
+      return new Response(JSON.stringify({
+        error: 'Failed to update message status'
+      }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+  
+  // Admin API - Delete contact message
+  if (path.match(/\/api\/admin\/contact-messages\/[^/]+/) && method === 'DELETE' && sess.role === 'admin') {
+    try {
+      const messageId = decodeURIComponent(path.split('/')[5]);
+      
+      const message = await DB.get(env, messageId);
+      if (!message) {
+        return new Response(JSON.stringify({
+          error: 'Message not found'
+        }), { 
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      await DB.delete(env, messageId);
+      
+      return new Response(JSON.stringify({
+        ok: true
+      }), { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Error deleting contact message:', error);
+      return new Response(JSON.stringify({
+        error: 'Failed to delete message'
+      }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+  
   // User Chat API
   if (path === '/api/chat' && method === 'POST') {
     const settings = await ConfigService.getAllSettings(env);

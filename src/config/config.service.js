@@ -34,105 +34,116 @@ export class ConfigService {
       // Import DB to avoid circular dependencies
       const { DB } = await import('../db/database.js');
       const settings = await DB.get(env, 'sys_settings');
-      return settings || {
-        admin_user: 'jasyscorp',
-        admin_pass: 'Jasyscorp-admin123000',
-        default_credits: 5000,
-        profit_margin: 1.5,
-        idr_rate: 16909,
-        guest_limit: 10,
-        openrouter_key: '',
-        midtrans_server_key: '',
-        midtrans_client_key: '',
-        midtrans_environment: 'sandbox', // 'sandbox' or 'production'
-        guest_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct'],
-        user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'],
-        ai_providers: [
-          {
-            id: 'openrouter',
-            name: 'OpenRouter',
-            endpoint: 'https://openrouter.ai/api/v1',
-            api_key: '',
-            active: true
+      
+      // Set initial admin credentials if they don't exist
+      if (!settings || !settings.admin_user || !settings.admin_pass) {
+        const initialSettings = {
+          admin_user: 'admin',
+          admin_pass: 'admin123',
+          default_credits: 5000,
+          profit_margin: 1.5,
+          idr_rate: 16909,
+          guest_limit: 10,
+          openrouter_key: '',
+          midtrans_server_key: '',
+          midtrans_client_key: '',
+          midtrans_environment: 'sandbox', // 'sandbox' or 'production'
+          guest_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct'],
+          user_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'],
+          ai_providers: [
+            {
+              id: 'openrouter',
+              name: 'OpenRouter',
+              endpoint: 'https://openrouter.ai/api/v1',
+              api_key: '',
+              active: true
+            }
+          ],
+          subscription_plans: [
+            { 
+              id: 'free', 
+              name: 'Free Plan', 
+              price: 0, 
+              credits: 5000, 
+              users: 1, 
+              features: ['Basic models', '5,000 credits/month', 'Community support', 'Standard API rate limits'],
+              available_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct']
+            },
+            { 
+              id: 'basic', 
+              name: 'Basic Plan', 
+              price: 29000, 
+              credits: 20000, 
+              users: 1, 
+              features: ['All models', '20,000 credits/month', 'Email support', 'Priority API rate limits', 'Usage analytics'],
+              available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+            },
+            { 
+              id: 'pro', 
+              name: 'Pro Plan', 
+              price: 79000, 
+              credits: 60000, 
+              users: 5, 
+              features: ['All models', '60,000 credits/month', 'Priority email support', 'Higher API rate limits', 'Team management', 'Advanced analytics', 'Custom branding'],
+              available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+            },
+            { 
+              id: 'enterprise', 
+              name: 'Enterprise Plan', 
+              price: 199000, 
+              credits: 200000, 
+              users: 20, 
+              features: ['All models', '200,000 credits/month', '24/7 phone support', 'Unlimited API rate limits', 'Advanced team management', 'Custom models', 'SLA guarantee', 'Dedicated account manager'],
+              available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
+            }
+          ],
+          credit_packages: [
+            { id: '10k', name: '10,000 Credits', price: 15000, credits: 10000, bonus_models: ['openai/gpt-4'] },
+            { id: '50k', name: '50,000 Credits', price: 70000, credits: 50000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus'] },
+            { id: '100k', name: '100,000 Credits', price: 130000, credits: 100000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo'] },
+            { id: '500k', name: '500,000 Credits', price: 600000, credits: 500000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'] }
+          ],
+          seo: {
+            default_title: 'Jasys AI - Advanced AI Platform for Developers',
+            default_description: 'Access powerful AI models through simple, transparent APIs. Jasys AI provides cutting-edge language models with developer-friendly integration and scalable infrastructure.',
+            default_keywords: 'Jasys AI, AI platform, artificial intelligence, language models, API, developers, machine learning, GPT, Claude, Gemini',
+            author: 'Jasys AI Team',
+            twitter_handle: '@jasysai',
+            og_image: '/assets/logo.png',
+            theme_color: '#7c3aed',
+            favicon_sizes: [16, 32, 180],
+            apple_touch_icon: true,
+            webmanifest: true
+          },
+          social: {
+            twitter: 'https://twitter.com/jasysai',
+            github: 'https://github.com/jasysai',
+            linkedin: 'https://linkedin.com/company/jasysai',
+            website: 'https://jasysai.com'
+          },
+          company: {
+            name: 'Jasys AI',
+            description: 'Leading AI platform providing access to powerful language models through simple, transparent APIs.',
+            founded: '19 January 2026',
+            location: 'Global',
+            contact_email: 'contact@jasysai.com',
+            support_email: 'support@jasysai.com',
+            technical_support: 'technical@jasysai.com'
           }
-        ],
-        subscription_plans: [
-          { 
-            id: 'free', 
-            name: 'Free Plan', 
-            price: 0, 
-            credits: 5000, 
-            users: 1, 
-            features: ['Basic models', '5,000 credits/month', 'Community support', 'Standard API rate limits'],
-            available_models: ['openai/gpt-3.5-turbo', 'anthropic/claude-3-haiku', 'meta-llama/llama-3.1-8b-instruct']
-          },
-          { 
-            id: 'basic', 
-            name: 'Basic Plan', 
-            price: 29000, 
-            credits: 20000, 
-            users: 1, 
-            features: ['All models', '20,000 credits/month', 'Email support', 'Priority API rate limits', 'Usage analytics'],
-            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
-          },
-          { 
-            id: 'pro', 
-            name: 'Pro Plan', 
-            price: 79000, 
-            credits: 60000, 
-            users: 5, 
-            features: ['All models', '60,000 credits/month', 'Priority email support', 'Higher API rate limits', 'Team management', 'Advanced analytics', 'Custom branding'],
-            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
-          },
-          { 
-            id: 'enterprise', 
-            name: 'Enterprise Plan', 
-            price: 199000, 
-            credits: 200000, 
-            users: 20, 
-            features: ['All models', '200,000 credits/month', '24/7 phone support', 'Unlimited API rate limits', 'Advanced team management', 'Custom models', 'SLA guarantee', 'Dedicated account manager'],
-            available_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet']
-          }
-        ],
-        credit_packages: [
-          { id: '10k', name: '10,000 Credits', price: 15000, credits: 10000, bonus_models: ['openai/gpt-4'] },
-          { id: '50k', name: '50,000 Credits', price: 70000, credits: 50000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus'] },
-          { id: '100k', name: '100,000 Credits', price: 130000, credits: 100000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo'] },
-          { id: '500k', name: '500,000 Credits', price: 600000, credits: 500000, bonus_models: ['openai/gpt-4', 'anthropic/claude-3-opus', 'openai/gpt-4-turbo', 'anthropic/claude-3-sonnet'] }
-        ],
-        seo: {
-          default_title: 'Jasys AI - Advanced AI Platform for Developers',
-          default_description: 'Access powerful AI models through simple, transparent APIs. Jasys AI provides cutting-edge language models with developer-friendly integration and scalable infrastructure.',
-          default_keywords: 'Jasys AI, AI platform, artificial intelligence, language models, API, developers, machine learning, GPT, Claude, Gemini',
-          author: 'Jasys AI Team',
-          twitter_handle: '@jasysai',
-          og_image: '/assets/logo.png',
-          theme_color: '#7c3aed',
-          favicon_sizes: [16, 32, 180],
-          apple_touch_icon: true,
-          webmanifest: true
-        },
-        social: {
-          twitter: 'https://twitter.com/jasysai',
-          github: 'https://github.com/jasysai',
-          linkedin: 'https://linkedin.com/company/jasysai',
-          website: 'https://jasysai.com'
-        },
-        company: {
-          name: 'Jasys AI',
-          description: 'Leading AI platform providing access to powerful language models through simple, transparent APIs.',
-          founded: '19 January 2026',
-          location: 'Global',
-          contact_email: 'contact@jasysai.com',
-          support_email: 'support@jasysai.com',
-          technical_support: 'technical@jasysai.com'
-        }
-      };
+        };
+        
+        await DB.set(env, 'sys_settings', initialSettings);
+        return initialSettings;
+      }
+      
+      return settings; // Return the settings if they exist
+      
     } catch (error) {
       console.error('Error fetching settings:', error);
+      // Fallback to default settings if KV is not available
       return {
-        admin_user: 'jasyscorp',
-        admin_pass: 'Jasyscorp-admin123000',
+        admin_user: 'admin',
+        admin_pass: 'admin123',
         default_credits: 5000,
         profit_margin: 1.5,
         idr_rate: 16909,
@@ -244,20 +255,20 @@ export class ConfigService {
   static async getAdminUser(env) {
     try {
       const settings = await this.getAllSettings(env);
-      return settings.admin_user || 'jasyscorp';
+      return settings.admin_user;
     } catch (error) {
       console.error('Error getting admin user:', error);
-      return 'jasyscorp';
+      return null;
     }
   }
 
   static async getAdminPass(env) {
     try {
       const settings = await this.getAllSettings(env);
-      return settings.admin_pass || 'Jasyscorp-admin123000';
+      return settings.admin_pass;
     } catch (error) {
       console.error('Error getting admin pass:', error);
-      return 'Jasyscorp-admin123000';
+      return null;
     }
   }
 

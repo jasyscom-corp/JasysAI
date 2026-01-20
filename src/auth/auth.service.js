@@ -17,6 +17,11 @@ export class AuthService {
     const adminUser = await ConfigService.getAdminUser(env);
     const adminPass = await ConfigService.getAdminPass(env);
     
+    // Check if admin credentials are configured
+    if (!adminUser || !adminPass) {
+      return { err: "Admin configuration not set" };
+    }
+    
     if (username === adminUser && password === adminPass) {
       const token = 'adm_' + crypto.randomUUID().replace(/-/g,'');
       await DB.set(env, `sess:${token}`, { role: 'admin' }, 86400 * 7);

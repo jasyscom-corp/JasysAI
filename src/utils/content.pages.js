@@ -4,81 +4,52 @@ import { ContentModel } from '../models/index.js';
 import { getCurrentUrl } from './helpers.js';
 
 export async function ContentPage(request, env, pageKey) {
-  let settings = null;
+  // Load settings from KV store
+  let simpleSettings = null;
   try {
-    // Load settings first to ensure it's available for error handling
-    settings = await ConfigService.getAllSettings(env);
-  } catch (configError) {
-    console.error('Error loading settings:', configError);
-    settings = {
+    const settings = await DB.get(env, 'sys_settings');
+    simpleSettings = {
+      company: {
+        name: settings?.company?.name || 'JasyAI',
+        support_email: settings?.company?.support_email || 'support@jasyai.com',
+        technical_support: settings?.company?.technical_support || 'technical@jasyai.com',
+        response_time: settings?.company?.response_time || 'Within 24 hours',
+        support_hours: settings?.company?.support_hours || 'Monday - Friday, 9 AM - 6 PM UTC'
+      },
+      site_url: 'https://ai.jasyscom.workers.dev'
+    };
+  } catch (error) {
+    console.error('Error loading settings:', error);
+    simpleSettings = {
       company: {
         name: 'JasyAI',
         support_email: 'support@jasyai.com',
-        technical_support: 'technical@jasyai.com'
+        technical_support: 'technical@jasyai.com',
+        response_time: 'Within 24 hours',
+        support_hours: 'Monday - Friday, 9 AM - 6 PM UTC'
       },
       site_url: 'https://ai.jasyscom.workers.dev'
     };
   }
   
-  try {
-    const content = await ContentModel.get(env, pageKey);
-    
-    const pageConfig = {
-      about: {
-        title: 'About Us',
-        description: 'Learn more about our company and mission'
-      },
-      blog: {
-        title: 'Blog',
-        description: 'Latest news and updates from our team'
-      },
-      contact: {
-        title: 'Contact Us',
-        description: 'Get in touch with our team'
-      },
-      privacy_policy: {
-        title: 'Privacy Policy',
-        description: 'How we collect, use, and protect your data'
-      },
-      terms_of_service: {
-        title: 'Terms of Service',
-        description: 'Terms and conditions for using our service'
-      },
-      security: {
-        title: 'Security',
-        description: 'Security measures and best practices'
-      }
-    };
+  const pageConfig = {
+    about: { title: 'About Us', description: 'Learn more about our company and mission' },
+    blog: { title: 'Blog', description: 'Latest news and updates from our team' },
+    contact: { title: 'Contact Us', description: 'Get in touch with our team' },
+    privacy_policy: { title: 'Privacy Policy', description: 'How we collect, use, and protect your data' },
+    terms_of_service: { title: 'Terms of Service', description: 'Terms and conditions for using our service' },
+    security: { title: 'Security', description: 'Security measures and best practices' }
+  };
 
-    const config = pageConfig[pageKey] || { title: 'Content', description: '' };
-
+  const config = pageConfig[pageKey] || { title: 'Content', description: '' };
   const currentUrl = getCurrentUrl(request);
-  const seoMeta = getSEOMeta(pageKey, content, config, currentUrl, settings);
   
   return `
 <!DOCTYPE html><html lang="en" class="dark"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${seoMeta.title} - ${settings.company.name}</title>
-  <meta name="description" content="${seoMeta.description}">
-  <meta name="keywords" content="${seoMeta.keywords}">
-  <meta name="author" content="${settings.company.name}">
-  <meta property="og:title" content="${seoMeta.title} - ${settings.company.name}">
-  <meta property="og:description" content="${seoMeta.description}">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="${currentUrl}${pageKey === 'about' ? '' : '/' + pageKey.replace('_', '-')}">
-  <meta property="og:site_name" content="${settings.company.name}">
-  <meta property="og:image" content="${currentUrl}/assets/logo.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${seoMeta.title} - ${settings.company.name}">
-  <meta name="twitter:description" content="${seoMeta.description}">
-  <meta name="twitter:image" content="${settings.site_url}/assets/logo.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/site.webmanifest">
-  <meta name="theme-color" content="#7c3aed">
-  <script type="application/ld+json">${seoMeta.structuredData}</script>
+  <title>${config.title} - ${simpleSettings.company.name}</title>
+  <meta name="description" content="${config.description}">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
@@ -86,7 +57,7 @@ export async function ContentPage(request, env, pageKey) {
   <nav class="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3 font-bold text-2xl">
-        ${LOGO_SVG} ${settings.company.name}
+        ${LOGO_SVG} ${simpleSettings.company.name}
       </div>
       <div class="hidden md:flex items-center gap-6">
         <a href="/" class="text-slate-300 hover:text-white transition">Home</a>
@@ -101,37 +72,114 @@ export async function ContentPage(request, env, pageKey) {
         </svg>
       </button>
     </div>
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-md border-t border-slate-800/50">
-      <div class="px-6 py-4 space-y-3">
-        <a href="/" class="block text-slate-300 hover:text-white transition">Home</a>
-        <a href="#features" class="block text-slate-300 hover:text-white transition">Features</a>
-        <a href="#pricing" class="block text-slate-300 hover:text-white transition">Pricing</a>
-        <a href="#api" class="block text-slate-300 hover:text-white transition">API</a>
-        <button onclick="showLogin()" class="w-full bg-brand px-6 py-2 rounded-full font-bold hover:bg-brand/90 transition">Sign In</button>
-      </div>
-    </div>
   </nav>
 
   <!-- Content Section -->
   <section class="pt-32 pb-20 px-6">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-black mb-4">${content.title || config.title}</h1>
+        <h1 class="text-4xl md:text-5xl font-black mb-4">${config.title}</h1>
         <p class="text-xl text-slate-300">${config.description}</p>
-        ${content.last_updated ? `<p class="text-sm text-slate-500 mt-2">Last updated: ${new Date(content.last_updated).toLocaleDateString()}</p>` : ''}
       </div>
       
       <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 md:p-12">
-        ${content.content ? `
-          <div class="prose prose-invert max-w-none">
-            ${content.content.replace(/\n/g, '<br>')}
-          </div>
-        ` : `
-          <div class="text-slate-300">
-            ${getDefaultContent(pageKey, settings)}
-          </div>
-        `}
+        <div class="text-slate-300">
+          <h2 class="text-2xl font-bold mb-4">${config.title}</h2>
+          <p class="mb-4">This is a simplified version of the ${config.title.toLowerCase()} page.</p>
+          <p class="mb-4">This page is currently under development and will be updated with more content soon.</p>
+          
+          ${pageKey === 'contact' ? `
+            <div class="grid md:grid-cols-2 gap-8 mt-8">
+              <div>
+                <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+                <div class="space-y-3">
+                  <p><strong>Email:</strong> ${simpleSettings.company.support_email}</p>
+                  <p><strong>Response Time:</strong> Within 24 hours</p>
+                  <p><strong>Support Hours:</strong> Monday - Friday, 9 AM - 6 PM UTC</p>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold mb-4">Send us a Message</h3>
+                <form id="contactForm" class="space-y-4">
+                  <div>
+                    <label for="name" class="block text-sm font-medium text-slate-300 mb-2">Your Name</label>
+                    <input type="text" id="name" name="name" required
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition"
+                      placeholder="Enter your name">
+                  </div>
+                  
+                  <div>
+                    <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Your Email</label>
+                    <input type="email" id="email" name="email" required
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition"
+                      placeholder="Enter your email">
+                  </div>
+                  
+                  <div>
+                    <label for="subject" class="block text-sm font-medium text-slate-300 mb-2">Subject</label>
+                    <input type="text" id="subject" name="subject" required
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition"
+                      placeholder="Enter subject">
+                  </div>
+                  
+                  <div>
+                    <label for="message" class="block text-sm font-medium text-slate-300 mb-2">Message</label>
+                    <textarea id="message" name="message" required rows="4"
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition"
+                      placeholder="Enter your message"></textarea>
+                  </div>
+                  
+                  <button type="submit"
+                    class="w-full bg-brand hover:bg-brand/90 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                    Send Message
+                  </button>
+                </form>
+                
+                <div id="formMessage" class="mt-4 text-sm font-medium hidden"></div>
+              </div>
+            </div>
+            
+            <script>
+              document.getElementById('contactForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                const messageDiv = document.getElementById('formMessage');
+                messageDiv.classList.remove('hidden', 'text-green-400', 'text-red-400');
+                messageDiv.textContent = 'Sending your message...';
+                messageDiv.classList.add('text-yellow-400');
+                
+                try {
+                  const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                  });
+                  
+                  if (response.ok) {
+                    messageDiv.textContent = 'Thank you! Your message has been sent. We will get back to you soon.';
+                    messageDiv.classList.remove('text-yellow-400');
+                    messageDiv.classList.add('text-green-400');
+                    e.target.reset();
+                  } else {
+                    const errorData = await response.json();
+                    messageDiv.textContent = 'Error: ' + (errorData.error || 'Failed to send message');
+                    messageDiv.classList.remove('text-yellow-400');
+                    messageDiv.classList.add('text-red-400');
+                  }
+                } catch (error) {
+                  messageDiv.textContent = 'Error: Failed to send message';
+                  messageDiv.classList.remove('text-yellow-400');
+                  messageDiv.classList.add('text-red-400');
+                }
+              });
+            </script>
+          ` : ''}
+        </div>
       </div>
       
       <div class="text-center mt-8">
@@ -151,7 +199,7 @@ export async function ContentPage(request, env, pageKey) {
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div>
           <div class="flex items-center gap-3 font-bold text-xl text-white mb-4">
-            ${LOGO_SVG} ${settings.company.name}
+            ${LOGO_SVG} ${simpleSettings.company.name}
           </div>
           <p class="text-slate-400 text-sm">
             Your gateway to powerful AI models with simple, transparent pricing.
@@ -187,7 +235,7 @@ export async function ContentPage(request, env, pageKey) {
       </div>
       
       <div class="border-t border-slate-800/50 pt-8 text-center text-slate-400 text-sm">
-        <p>&copy; 2026 ${settings.company.name}. All rights reserved.</p>
+        <p>&copy; 2026 ${simpleSettings.company.name}. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -203,12 +251,6 @@ export async function ContentPage(request, env, pageKey) {
     }
   </script>
 </body></html>`;
-  } catch (error) {
-    console.error('Error rendering content page:', error);
-    // Return a proper HTML error page instead of letting it bubble up as JSON
-    const currentUrl = getCurrentUrl(request);
-    return getErrorPage(pageKey, error.message, currentUrl, settings);
-  }
 }
 
 function getDefaultContent(pageKey, settings) {

@@ -1,8 +1,6 @@
 export default {
   site_name: "Jasys AI",
   site_url: "https://ai.jasyscom.workers.dev",
-  admin_user: "jasyscorp",
-  admin_pass: "Jasyscorp-admin123000",
   default_credits: 5000,
   profit_margin: 1.5,
   idr_rate: 16909,
